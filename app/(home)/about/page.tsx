@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { ArrowRight, Leaf, Heart, Users } from 'lucide-react'
+import Link from 'next/link'
 
 export default function AboutPage() {
     return (
@@ -145,12 +146,16 @@ export default function AboutPage() {
                         Rejoignez-nous à Maison Comores pour une expérience culinaire inoubliable.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Button size="lg" className="rounded-full h-14 px-10 text-lg shadow-xl shadow-primary/20">
-                            Réserver une Table
-                        </Button>
-                        <Button size="lg" variant="ghost" className="rounded-full h-14 px-10 text-lg gap-2 group">
-                            Explorer le Menu <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                        </Button>
+                        <Link href="/reservation">
+                            <Button size="lg" className="rounded-full h-14 px-10 text-lg shadow-xl shadow-primary/20">
+                                Réserver une Table
+                            </Button>
+                        </Link>
+                        <Link href="/menu">
+                            <Button size="lg" variant="ghost" className="rounded-full h-14 px-10 text-lg gap-2 group">
+                                Explorer le Menu <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                            </Button>
+                        </Link>
                     </div>
                 </div>
             </section>

@@ -121,7 +121,7 @@ const ContactPage = () => {
                     transition={{ duration: 0.6, delay: 0.4 }}
                     className="lg:col-span-8"
                 >
-                    <Card className="border-none shadow-2xl bg-card/30 backdrop-blur-2xl rounded-[2rem] md:rounded-[2.5rem] overflow-hidden">
+                    <Card className="border-none border-amber-200/50 shadow-2xl bg-white/70 dark:bg-card/30 backdrop-blur-2xl rounded-[2rem] md:rounded-[2.5rem] overflow-hidden">
                         <div className="p-6 md:p-12">
                             <div className="mb-10">
                                 <div className="flex items-center gap-3 text-primary mb-2">
@@ -138,7 +138,7 @@ const ContactPage = () => {
                                         <label className="text-sm font-semibold ml-1">Nom Complet</label>
                                         <Input
                                             placeholder="Jean Dupont"
-                                            className="h-14 rounded-2xl bg-background/50 border-border/50 focus:border-primary transition-all px-6"
+                                            className="h-14 rounded-2xl bg-background/50 border-border/50 focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all px-6"
                                         />
                                     </div>
                                     <div className="space-y-2">
@@ -146,7 +146,7 @@ const ContactPage = () => {
                                         <Input
                                             type="email"
                                             placeholder="jean@example.com"
-                                            className="h-14 rounded-2xl bg-background/50 border-border/50 focus:border-primary transition-all px-6"
+                                            className="h-14 rounded-2xl bg-background/50 border-border/50 focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all px-6"
                                         />
                                     </div>
                                 </div>
@@ -155,7 +155,7 @@ const ContactPage = () => {
                                     <label className="text-sm font-semibold ml-1">Sujet</label>
                                     <Input
                                         placeholder="Réservation de table / Demande spéciale"
-                                        className="h-14 rounded-2xl bg-background/50 border-border/50 focus:border-primary transition-all px-6"
+                                        className="h-14 rounded-2xl bg-background/50 border-border/50 focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all px-6"
                                     />
                                 </div>
 
@@ -164,7 +164,7 @@ const ContactPage = () => {
                                     <Textarea
                                         placeholder="Dites-nous ce que vous en pensez..."
                                         rows={6}
-                                        className="rounded-[2rem] bg-background/50 border-border/50 focus:border-primary transition-all p-6 min-h-[150px]"
+                                        className="rounded-[2rem] bg-background/50 border-border/50 focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all p-6 min-h-[150px]"
                                     />
                                 </div>
 

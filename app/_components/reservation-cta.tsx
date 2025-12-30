@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { CalendarDays, Phone } from 'lucide-react'
+import Link from 'next/link'
 
 export default function ReservationCTA() {
     return (
@@ -39,19 +40,21 @@ export default function ReservationCTA() {
                         </p>
 
                         <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-                            <Button
-                                size="lg"
-                                className="h-14 px-8 rounded-full text-lg font-semibold bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25"
-                            >
-                                <CalendarDays className="mr-2 h-5 w-5" />
-                                Réserver une Table
-                            </Button>
+                            <Link href="/reservation">
+                                <Button
+                                    size="lg"
+                                    className="h-14 px-8 cursor-pointer rounded-full text-lg font-semibold bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25"
+                                >
+                                    <CalendarDays className="mr-2 h-5 w-5" />
+                                    Réserver une Table
+                                </Button>
+                            </Link>
                             <Button
                                 size="lg"
                                 variant="outline"
-                                className="h-14 px-8 rounded-full text-lg font-semibold border-white/30 text-white hover:bg-white/10 hover:border-white bg-transparent backdrop-blur-sm"
+                                className="h-14 px-8 cursor-pointer rounded-full text-lg font-semibold hover:text-primary transition-colors border-white/30 text-white hover:bg-white/10 hover:border-white bg-transparent backdrop-blur-sm"
                             >
-                                <Phone className="mr-2 h-5 w-5" />
+                                <Phone className="mr-2 transition-colors h-5 w-5" />
                                 +33 1 23 45 67 89
                             </Button>
                         </div>

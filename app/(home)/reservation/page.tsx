@@ -280,53 +280,94 @@ export default function ReservationPage() {
                                 key="form"
                                 initial={{ opacity: 0, x: 20 }}
                                 animate={{ opacity: 1, x: 0 }}
-                                className="rounded-[2.5rem] border bg-card/40 backdrop-blur-xl p-8"
+                                className="rounded-[2.5rem] border border-amber-200/50 bg-white/20 dark:bg-card/40 backdrop-blur-2xl p-8 md:p-10 shadow-2xl relative overflow-hidden"
                             >
+                                {/* Decorative elements for the form */}
+                                <div className="absolute top-0 right-0 p-8 opacity-5">
+                                    <CalendarDays className="w-32 h-32" />
+                                </div>
+
                                 <form
                                     onSubmit={handleSubmit(onSubmit)}
-                                    className="space-y-6"
+                                    className="space-y-6 relative z-10"
                                 >
                                     {/* Name / Email */}
                                     <div className="grid md:grid-cols-2 gap-6">
-                                        <Input
-                                            placeholder="Nom complet"
-                                            {...register('name', { required: true })}
-                                        />
-                                        <Input
-                                            type="email"
-                                            placeholder="Email"
-                                            {...register('email', { required: true })}
-                                        />
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-semibold ml-1 flex items-center gap-2">
+                                                <User className="w-4 h-4 text-primary" /> Nom complet
+                                            </label>
+                                            <Input
+                                                placeholder="Jean Dupont"
+                                                className="h-12 rounded-xl bg-background/50 border-border/50 focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all px-4"
+                                                {...register('name', { required: true })}
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-semibold ml-1 flex items-center gap-2">
+                                                <Mail className="w-4 h-4 text-primary" /> Email
+                                            </label>
+                                            <Input
+                                                type="email"
+                                                placeholder="jean@example.com"
+                                                className="h-12 rounded-xl bg-background/50 border-border/50 focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all px-4"
+                                                {...register('email', { required: true })}
+                                            />
+                                        </div>
                                     </div>
 
                                     {/* Phone / Guests */}
                                     <div className="grid md:grid-cols-2 gap-6">
-                                        <Input
-                                            placeholder="Téléphone"
-                                            {...register('phone', { required: true })}
-                                        />
-                                        <Input
-                                            type="number"
-                                            min={1}
-                                            {...register('guests', { required: true, valueAsNumber: true })}
-                                        />
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-semibold ml-1 flex items-center gap-2">
+                                                <Phone className="w-4 h-4 text-primary" /> Téléphone
+                                            </label>
+                                            <Input
+                                                placeholder="+269 123 456"
+                                                className="h-12 rounded-xl bg-background/50 border-border/50 focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all px-4"
+                                                {...register('phone', { required: true })}
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-semibold ml-1 flex items-center gap-2">
+                                                <Users className="w-4 h-4 text-primary" /> Personnes
+                                            </label>
+                                            <Input
+                                                type="number"
+                                                min={1}
+                                                className="h-12 rounded-xl bg-background/50 border-border/50 focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all px-4"
+                                                {...register('guests', { required: true, valueAsNumber: true })}
+                                            />
+                                        </div>
                                     </div>
 
                                     {/* Date */}
-                                    <Input
-                                        type="datetime-local"
-                                        {...register('date', { required: true })}
-                                    />
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-semibold ml-1 flex items-center gap-2">
+                                            <CalendarDays className="w-4 h-4 text-primary" /> Date et Heure
+                                        </label>
+                                        <Input
+                                            type="datetime-local"
+                                            className="h-12 rounded-xl bg-background/50 border-border/50 focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all px-4"
+                                            {...register('date', { required: true })}
+                                        />
+                                    </div>
 
                                     {/* Message */}
-                                    <Textarea
-                                        rows={4}
-                                        placeholder="Message (optionnel)"
-                                        {...register('message')}
-                                    />
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-semibold ml-1 flex items-center gap-2">
+                                            <MessageSquare className="w-4 h-4 text-primary" /> Message (optionnel)
+                                        </label>
+                                        <Textarea
+                                            rows={4}
+                                            placeholder="Demandes particulières, allergies..."
+                                            className="rounded-2xl bg-background/50 border-border/50 focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all p-4 min-h-[120px]"
+                                            {...register('message')}
+                                        />
+                                    </div>
 
                                     {error && (
-                                        <p className="text-sm text-red-500 bg-red-500/10 p-3 rounded-lg">
+                                        <p className="text-sm text-red-500 bg-red-500/10 p-3 rounded-lg border border-red-500/20">
                                             {error}
                                         </p>
                                     )}
@@ -334,9 +375,18 @@ export default function ReservationPage() {
                                     <Button
                                         type="submit"
                                         disabled={loading}
-                                        className="w-full h-14 rounded-2xl text-lg font-bold"
+                                        className="w-full h-14 rounded-2xl text-lg font-bold shadow-xl shadow-primary/20 hover:scale-[1.01] transition-all"
                                     >
-                                        {loading ? 'Envoi en cours...' : 'Réserver maintenant'}
+                                        {loading ? (
+                                            <span className="flex items-center gap-2">
+                                                <motion.span
+                                                    animate={{ rotate: 360 }}
+                                                    transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                                                    className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
+                                                />
+                                                Envoi en cours...
+                                            </span>
+                                        ) : 'Réserver maintenant'}
                                     </Button>
                                 </form>
                             </motion.div>
