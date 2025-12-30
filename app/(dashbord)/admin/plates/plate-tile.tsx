@@ -45,7 +45,7 @@ import {
 } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
 
-import { Prisma } from '@prisma/client'
+import { Prisma } from '@/lib/prisma'
 
 type PlateWithCategory = Prisma.PlateGetPayload<{
     include: { category: true }

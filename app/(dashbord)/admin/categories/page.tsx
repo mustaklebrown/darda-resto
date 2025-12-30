@@ -1,9 +1,8 @@
 
 
-import prisma from '@/lib/prisma'
+import prisma, { Category } from '@/lib/prisma'
 import { CategoryTile } from './category-tile'
 import { CategoryForm } from './category-form'
-import { Category } from '@/app/generated/prisma'
 
 export default async function CategoriesPage() {
     const categories: Category[] = await prisma.category.findMany({

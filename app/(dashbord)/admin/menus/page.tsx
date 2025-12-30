@@ -15,7 +15,7 @@ import { MenuTile } from './menu-tile'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Prisma } from '@prisma/client'
+import { Prisma } from '@/lib/prisma'
 export const menuWithRelations = {
     plates: { include: { category: true } },
     categories: true,

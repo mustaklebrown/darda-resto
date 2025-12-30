@@ -2,7 +2,7 @@ import prisma from '@/lib/prisma'
 import { PlateForm } from '@/app/_components/plate-form'
 import { updatePlate } from '@/app/(dashbord)/admin/plates/actions'
 import { redirect } from 'next/navigation'
-import { Prisma } from '@prisma/client'
+import { Prisma } from '@/lib/prisma'
 
 export default async function EditPlatePage({
     params,

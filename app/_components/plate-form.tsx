@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { UploadImage } from '@/components/upload-image'
 
 
-import { Category, Plate } from '@prisma/client'
+import { Category, Plate } from '@/lib/prisma'
 
 interface PlateFormProps {
     initialData: Partial<Plate>

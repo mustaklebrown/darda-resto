@@ -3,7 +3,6 @@
 import prisma from '@/lib/prisma';
 import { menuSchema } from '@/lib/validators/menu';
 import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
 
 type ActionResult = { success: true } | { success: false; error: string };
 

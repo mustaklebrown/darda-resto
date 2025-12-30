@@ -1,9 +1,8 @@
-import prisma from '@/lib/prisma'
+import prisma, { Reservation } from '@/lib/prisma'
 import StatusSelect from './status-select'
 import { Calendar, Users, Mail, Phone, Clock, MessageSquare } from 'lucide-react'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale/fr'
-import { Reservation } from '@prisma/client'
 
 export default async function AdminReservationsPage() {
     const reservations: Reservation[] = await prisma.reservation.findMany({
@@ -97,7 +96,7 @@ export default async function AdminReservationsPage() {
 
                                     {r.message && (
                                         <div className="flex gap-3 text-sm italic text-muted-foreground bg-secondary/20 p-3 rounded-xl border border-border/20">
-                                            <MessageSquare className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                                            <MessageSquare className="w-4 h-4 shrink-0 mt-0.5" />
                                             <p>{r.message}</p>
                                         </div>
                                     )}

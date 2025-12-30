@@ -38,7 +38,7 @@ import {
 } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
 import Link from 'next/link'
-import { Plate, Category, Menu, Prisma } from '@prisma/client'
+import { Plate, Category, Menu, Prisma } from '@/app/generated/prisma'
 
 /* ─────────────────────────────────────────────────────────── */
 

@@ -23,7 +23,7 @@ import {
 import { toast } from 'sonner'
 
 import { deleteMenuAction, toggleFeaturedMenu, toggleActiveMenu } from '@/app/actions/menu'
-import { Prisma, MenuType } from '@prisma/client'
+import { Prisma, MenuType } from '@/lib/prisma'
 import { menuWithRelations } from './page'
 
 import { Button } from '@/components/ui/button'
