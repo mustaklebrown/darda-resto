@@ -10,7 +10,6 @@ import { Badge } from '@/components/ui/badge';
 import {
     Card,
     CardContent,
-    CardDescription,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
@@ -41,13 +40,13 @@ const ContactPage = () => {
     ];
 
     return (
-        <main className="min-h-screen pt-32 pb-24 overflow-hidden">
+        <main className="min-h-screen pt-24 md:pt-32 pb-16 md:pb-24 overflow-hidden relative">
             {/* Background Decorative Elements */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-primary/5 rounded-full blur-[120px] -z-10" />
             <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-primary/3 rounded-full blur-[100px] -z-10" />
 
             {/* Hero Section */}
-            <section className="px-6 mb-20 text-center">
+            <section className="px-6 mb-12 md:mb-20 text-center">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -57,7 +56,7 @@ const ContactPage = () => {
                     <Badge variant="secondary" className="mb-4 px-4 py-1.5 bg-primary/10 text-primary border-primary/20 font-bold rounded-lg leading-none">
                         CONTACTEZ-NOUS
                     </Badge>
-                    <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
+                    <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold tracking-tight mb-6">
                         Nous Serions <span className="text-primary italic">Ravis</span> de vous Entendre
                     </h1>
                     <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
@@ -67,7 +66,7 @@ const ContactPage = () => {
                 </motion.div>
             </section>
 
-            <section className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+            <section className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
                 {/* Contact Info - Left Column */}
                 <div className="lg:col-span-4 space-y-6">
                     <motion.div
@@ -122,8 +121,8 @@ const ContactPage = () => {
                     transition={{ duration: 0.6, delay: 0.4 }}
                     className="lg:col-span-8"
                 >
-                    <Card className="border-none shadow-2xl bg-card/30 backdrop-blur-2xl rounded-[2.5rem] overflow-hidden">
-                        <div className="p-8 md:p-12">
+                    <Card className="border-none shadow-2xl bg-card/30 backdrop-blur-2xl rounded-[2rem] md:rounded-[2.5rem] overflow-hidden">
+                        <div className="p-6 md:p-12">
                             <div className="mb-10">
                                 <div className="flex items-center gap-3 text-primary mb-2">
                                     <MessageSquare className="w-5 h-5" />
@@ -185,7 +184,7 @@ const ContactPage = () => {
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.8, delay: 0.6 }}
-                    className="relative rounded-[3rem] overflow-hidden h-[500px] shadow-2xl border border-border/40 group"
+                    className="relative rounded-[2rem] md:rounded-[3rem] overflow-hidden h-[400px] md:h-[500px] shadow-2xl border border-border/40 group"
                 >
                     <iframe
                         title="Location"
@@ -193,7 +192,7 @@ const ContactPage = () => {
                         className="h-full w-full border-0 grayscale hover:grayscale-0 transition-all duration-1000"
                         loading="lazy"
                     />
-                    <div className="absolute bottom-8 left-8 right-8 md:right-auto md:w-96 p-8 glass rounded-3xl shadow-2xl transform transition-transform group-hover:translate-y-[-10px]">
+                    <div className="absolute bottom-4 left-4 right-4 md:bottom-8 md:left-8 md:right-auto md:w-96 p-6 md:p-8 glass rounded-2xl md:rounded-3xl shadow-2xl transform transition-transform group-hover:translate-y-[-10px]">
                         <h3 className="text-xl font-bold mb-2">Trouvez-nous à Moroni</h3>
                         <p className="text-sm text-foreground/80 mb-4">
                             Nous sommes situés au cœur de la ville, parfaitement situés pour le déjeuner et le dîner.

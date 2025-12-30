@@ -105,10 +105,12 @@ export default function Navbar() {
                                         </div>
 
                                         <div className="mt-8 pt-8 border-t border-border/40 flex flex-col gap-4">
-                                            <Button className="w-full py-6 rounded-2xl text-lg font-bold shadow-xl shadow-primary/20 bg-primary hover:bg-primary/90 transition-all flex items-center justify-center gap-2">
-                                                Réserver une table
-                                                <ArrowRight className="w-5 h-5" />
-                                            </Button>
+                                            <Link href="/reservation" onClick={() => setIsOpen(false)}>
+                                                <Button className="w-full py-6 rounded-2xl text-lg font-bold shadow-xl shadow-primary/20 bg-primary hover:bg-primary/90 transition-all flex items-center justify-center gap-2">
+                                                    Réserver une table
+                                                    <ArrowRight className="w-5 h-5" />
+                                                </Button>
+                                            </Link>
                                             <p className="text-center text-sm text-muted-foreground mt-4">
                                                 Découvrez les saveurs des Comores
                                             </p>
