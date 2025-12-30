@@ -39,16 +39,16 @@ export default function HeroSection({ todayMenu }: HeroProps) {
             <div className="absolute inset-0 bg-linear-to-b from-black/80 via-black/50 to-transparent dark:from-black/90 dark:via-black/75" />
 
             {/* Content Container */}
-            <div className="relative z-10 w-full px-4 md:px-6 py-20 md:py-0 mt-8 md:mt-0">
+            <div className="relative z-10 w-full px-4 md:px-8 py-20 lg:py-0 mt-8 lg:mt-0">
                 <div className="mx-auto max-w-7xl">
-                    <div className="grid gap-8 lg:gap-12 md:grid-cols-2 items-center">
+                    <div className="grid gap-12 lg:grid-cols-2 items-center">
 
                         {/* LEFT — Description + CTA */}
                         <motion.div
                             initial={{ opacity: 0, x: -30 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.8, ease: 'easeOut' }}
-                            className="bg-black/30 backdrop-blur-md rounded-3xl p-6 md:p-10 border border-white/10 shadow-2xl text-center md:text-left"
+                            className="bg-black/30 backdrop-blur-md rounded-3xl p-6 lg:p-10 border border-white/10 shadow-2xl text-center lg:text-left"
                         >
                             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-white mb-4 drop-shadow-md">
                                 <span className="block text-white">
@@ -59,13 +59,13 @@ export default function HeroSection({ todayMenu }: HeroProps) {
                                 </span>
                             </h1>
 
-                            <p className="mb-8 text-base sm:text-lg text-white/90 md:max-w-xl mx-auto md:mx-0 font-medium leading-relaxed drop-shadow-sm">
+                            <p className="mb-8 text-base sm:text-lg text-white/90 lg:max-w-xl mx-auto lg:mx-0 font-medium leading-relaxed drop-shadow-sm">
                                 Vivez la chaleur de la tradition avec nos repas frais et
                                 faits maison, inspirés par le riche héritage culinaire
                                 de l'archipel des Comores.
                             </p>
 
-                            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                                 <Link href="/menu">
                                     <Button
                                         size="lg"
@@ -92,7 +92,7 @@ export default function HeroSection({ todayMenu }: HeroProps) {
                             initial={{ opacity: 0, scale: 0.95, y: 30 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             transition={{ duration: 0.8, ease: 'easeOut', delay: 0.2 }}
-                            className="relative w-full max-w-md mx-auto md:mx-0"
+                            className="relative w-full max-w-md mx-auto lg:mx-0"
                         >
                             <div className="relative overflow-hidden rounded-3xl border border-white/20 bg-white/10 backdrop-blur-xl shadow-2xl p-6 sm:p-8">
                                 {/* Ribbon */}

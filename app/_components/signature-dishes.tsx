@@ -23,7 +23,7 @@ export default function SignatureDishes({ dishes }: SignatureDishesProps) {
             <div className="mx-auto max-w-7xl px-6 relative z-10">
 
                 {/* Section Header */}
-                <div className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div className="mb-16 flex flex-col lg:flex-row lg:items-end justify-between gap-8">
                     <motion.div
                         initial={{ opacity: 0, x: -20 }}
                         whileInView={{ opacity: 1, x: 0 }}
@@ -47,7 +47,7 @@ export default function SignatureDishes({ dishes }: SignatureDishesProps) {
                         transition={{ duration: 0.6, delay: 0.2 }}
                     >
                         <Link href="/menu">
-                            <Button variant="outline" className="hidden md:flex gap-2 rounded-full border-primary/20 hover:bg-primary/5 cursor-pointer">
+                            <Button variant="outline" className="hidden lg:flex gap-2 rounded-full border-primary/20 hover:bg-primary/5 cursor-pointer">
                                 Voir le Menu Complet <ArrowRight className="w-4 h-4" />
                             </Button>
                         </Link>
@@ -56,7 +56,7 @@ export default function SignatureDishes({ dishes }: SignatureDishesProps) {
                 </div>
 
                 {/* Dishes Grid */}
-                <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                     {dishes?.map((dish, index) => (
                         <motion.div
                             key={dish.id || dish.name}
@@ -111,7 +111,7 @@ export default function SignatureDishes({ dishes }: SignatureDishesProps) {
                 </div>
 
                 {/* Mobile CTA */}
-                <div className="mt-12 flex justify-center md:hidden">
+                <div className="mt-12 flex justify-center lg:hidden">
                     <Button
                         size="lg"
                         className="rounded-full w-full bg-primary text-primary-foreground shadow-lg shadow-primary/20"
