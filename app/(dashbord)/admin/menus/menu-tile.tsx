@@ -23,6 +23,8 @@ import {
 import { toast } from 'sonner'
 
 import { deleteMenuAction, toggleFeaturedMenu, toggleActiveMenu } from '@/app/actions/menu'
+import { Prisma, MenuType } from '@prisma/client'
+import { menuWithRelations } from './page'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -54,24 +56,11 @@ import {
 } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
 
-type MenuType = 'DAILY' | 'TIME_BASED' | 'SEASONAL' | 'REGULAR'
 
-type Menu = {
-    id: string
-    name: string
-    description: string | null
-    slug: string
-    type: MenuType
-    isFeatured: boolean
-    isActive: boolean
-    startTime: Date | null
-    endTime: Date | null
-    plates: any[]
-    categories: any[]
-}
+type MenuWithRelations = Prisma.MenuGetPayload<{ include: typeof menuWithRelations }>
 
 type Props = {
-    menu: Menu
+    menu: MenuWithRelations
 }
 
 // Helper to get menu type info
@@ -146,7 +135,7 @@ export function MenuTile({ menu }: Props) {
         })
     }
 
-    const hasSchedule = menu.startTime && menu.endTime
+    const hasSchedule = !!(menu.startTime && menu.endTime)
     const typeInfo = getMenuTypeInfo(menu.type)
     const TypeIcon = typeInfo.icon
 
@@ -271,8 +260,8 @@ export function MenuTile({ menu }: Props) {
                         <div className="space-y-3">
                             {/* Active Toggle */}
                             <div className={`flex items-center justify-between p-3 rounded-xl transition-all ${isActive
-                                    ? 'bg-linear-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20'
-                                    : 'bg-muted/50'
+                                ? 'bg-linear-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20'
+                                : 'bg-muted/50'
                                 }`}>
                                 <div className="flex items-center gap-2">
                                     <Power className={`h-4 w-4 ${isActive ? 'text-green-500' : 'text-muted-foreground'}`} />
@@ -289,8 +278,8 @@ export function MenuTile({ menu }: Props) {
 
                             {/* Featured Toggle */}
                             <div className={`flex items-center justify-between p-3 rounded-xl transition-all ${isFeatured
-                                    ? 'bg-linear-to-r from-amber-500/15 to-orange-500/15 border border-amber-500/30'
-                                    : 'bg-muted/50'
+                                ? 'bg-linear-to-r from-amber-500/15 to-orange-500/15 border border-amber-500/30'
+                                : 'bg-muted/50'
                                 }`}>
                                 <div className="flex items-center gap-2">
                                     <Sparkles className={`h-4 w-4 ${isFeatured ? 'text-amber-500' : 'text-muted-foreground'}`} />
@@ -378,7 +367,7 @@ export function MenuTile({ menu }: Props) {
                                     Catégories ({menu.categories.length})
                                 </h4>
                                 <div className="flex flex-wrap gap-2">
-                                    {menu.categories.map((c: any) => (
+                                    {menu.categories.map((c) => (
                                         <Badge key={c.id} variant="outline">
                                             {c.name}
                                         </Badge>
@@ -394,7 +383,7 @@ export function MenuTile({ menu }: Props) {
                                     Plats ({menu.plates.length})
                                 </h4>
                                 <div className="space-y-2">
-                                    {menu.plates.map((p: any) => (
+                                    {menu.plates.map((p) => (
                                         <div
                                             key={p.id}
                                             className="flex items-center justify-between p-3 rounded-lg bg-muted/50"

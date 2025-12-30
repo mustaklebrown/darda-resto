@@ -7,11 +7,19 @@ import { Textarea } from '@/components/ui/textarea'
 import { UploadImage } from '@/components/upload-image'
 
 
+import { Category, Plate } from '@prisma/client'
+
+interface PlateFormProps {
+    initialData: Partial<Plate>
+    categories: Category[]
+    onSubmit: (data: any) => void
+}
+
 export function PlateForm({
     initialData,
     categories,
     onSubmit,
-}: any) {
+}: PlateFormProps) {
     const [form, setForm] = useState(initialData)
 
     return (
@@ -52,7 +60,7 @@ export function PlateForm({
                     setForm({ ...form, categoryId: e.target.value })
                 }
             >
-                {categories.map((c: any) => (
+                {categories.map((c) => (
                     <option key={c.id} value={c.id}>
                         {c.name}
                     </option>

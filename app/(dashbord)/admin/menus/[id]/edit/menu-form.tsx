@@ -38,6 +38,7 @@ import {
 } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
 import Link from 'next/link'
+import { Plate, Category, Menu, Prisma } from '@prisma/client'
 
 /* ─────────────────────────────────────────────────────────── */
 
@@ -55,7 +56,18 @@ type MenuInput = z.infer<typeof menuSchema>
 
 /* ─────────────────────────────────────────────────────────── */
 
-export default function MenuForm({ menu, plates, categories }: any) {
+type MenuWithRelations = Menu & {
+    plates: Plate[]
+    categories: Category[]
+}
+
+interface MenuFormProps {
+    menu: MenuWithRelations
+    plates: Plate[]
+    categories: Category[]
+}
+
+export default function MenuForm({ menu, plates, categories }: MenuFormProps) {
     const router = useRouter()
     const [isPending, startTransition] = useTransition()
     const [previewOpen, setPreviewOpen] = useState(false)
@@ -73,16 +85,16 @@ export default function MenuForm({ menu, plates, categories }: any) {
             endTime: menu?.endTime
                 ? menu.endTime.toISOString().slice(0, 16)
                 : '',
-            plates: menu?.plates?.map((p: any) => p.id) ?? [],
-            categories: menu?.categories?.map((c: any) => c.id) ?? [],
+            plates: menu?.plates?.map((p) => p.id) ?? [],
+            categories: menu?.categories?.map((c) => c.id) ?? [],
         },
     })
 
     const watchedPlates = form.watch('plates') ?? []
     const watchedCategories = form.watch('categories') ?? []
 
-    const selectedPlates = plates.filter((p: any) => watchedPlates.includes(p.id))
-    const selectedCategories = categories.filter((c: any) => watchedCategories.includes(c.id))
+    const selectedPlates = plates.filter((p) => watchedPlates.includes(p.id))
+    const selectedCategories = categories.filter((c) => watchedCategories.includes(c.id))
 
     function onSubmit(values: MenuInput) {
         setFormError(null)
@@ -134,7 +146,7 @@ export default function MenuForm({ menu, plates, categories }: any) {
                 )}
 
                 {/* ══════════════════ Basic Info Card ══════════════════ */}
-                <Card className="border-0 shadow-lg bg-gradient-to-br from-background to-muted/30">
+                <Card className="border-0 shadow-lg bg-linear-to-br from-background to-muted/30">
                     <CardHeader className="pb-4">
                         <div className="flex items-center gap-3">
                             <div className="p-2 rounded-lg bg-primary/10">
@@ -179,7 +191,7 @@ export default function MenuForm({ menu, plates, categories }: any) {
                         </div>
 
                         {/* Featured toggle */}
-                        <div className="flex items-center justify-between p-4 rounded-xl bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20">
+                        <div className="flex items-center justify-between p-4 rounded-xl bg-linear-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20">
                             <div className="flex items-center gap-3">
                                 <Sparkles className="h-5 w-5 text-amber-500" />
                                 <div>
@@ -198,7 +210,7 @@ export default function MenuForm({ menu, plates, categories }: any) {
                 </Card>
 
                 {/* ══════════════════ Time Range Card ══════════════════ */}
-                <Card className="border-0 shadow-lg bg-gradient-to-br from-background to-muted/30">
+                <Card className="border-0 shadow-lg bg-linear-to-br from-background to-muted/30">
                     <CardHeader className="pb-4">
                         <div className="flex items-center gap-3">
                             <div className="p-2 rounded-lg bg-blue-500/10">
@@ -241,7 +253,7 @@ export default function MenuForm({ menu, plates, categories }: any) {
                 </Card>
 
                 {/* ══════════════════ Categories Card ══════════════════ */}
-                <Card className="border-0 shadow-lg bg-gradient-to-br from-background to-muted/30">
+                <Card className="border-0 shadow-lg bg-linear-to-br from-background to-muted/30">
                     <CardHeader className="pb-4">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
@@ -265,7 +277,7 @@ export default function MenuForm({ menu, plates, categories }: any) {
                     </CardHeader>
                     <CardContent>
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                            {categories.map((cat: any) => {
+                            {categories.map((cat) => {
                                 const isSelected = watchedCategories.includes(cat.id)
                                 return (
                                     <label
@@ -308,7 +320,7 @@ export default function MenuForm({ menu, plates, categories }: any) {
                 </Card>
 
                 {/* ══════════════════ Plates Card ══════════════════ */}
-                <Card className="border-0 shadow-lg bg-gradient-to-br from-background to-muted/30">
+                <Card className="border-0 shadow-lg bg-linear-to-br from-background to-muted/30">
                     <CardHeader className="pb-4">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
@@ -332,7 +344,7 @@ export default function MenuForm({ menu, plates, categories }: any) {
                     </CardHeader>
                     <CardContent>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                            {plates.map((plate: any) => {
+                            {plates.map((plate) => {
                                 const isSelected = watchedPlates.includes(plate.id)
                                 return (
                                     <label
@@ -394,7 +406,7 @@ export default function MenuForm({ menu, plates, categories }: any) {
                         type="submit"
                         size="lg"
                         disabled={isPending}
-                        className="flex-1 gap-2 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
+                        className="flex-1 gap-2 bg-linear-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
                     >
                         {isPending ? (
                             <>
@@ -428,7 +440,7 @@ export default function MenuForm({ menu, plates, categories }: any) {
                                 {form.watch('name') || 'Untitled Menu'}
                             </h2>
                             {form.watch('isFeatured') && (
-                                <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white gap-1">
+                                <Badge className="bg-linear-to-r from-amber-500 to-orange-500 text-white gap-1">
                                     <Sparkles className="h-3 w-3" />
                                     Featured
                                 </Badge>
@@ -467,7 +479,7 @@ export default function MenuForm({ menu, plates, categories }: any) {
                                     Categories ({selectedCategories.length})
                                 </h4>
                                 <div className="flex flex-wrap gap-2">
-                                    {selectedCategories.map((c: any) => (
+                                    {selectedCategories.map((c) => (
                                         <Badge key={c.id} variant="outline">
                                             {c.name}
                                         </Badge>
@@ -483,7 +495,7 @@ export default function MenuForm({ menu, plates, categories }: any) {
                                     Plates ({selectedPlates.length})
                                 </h4>
                                 <div className="space-y-2">
-                                    {selectedPlates.map((p: any) => (
+                                    {selectedPlates.map((p) => (
                                         <div
                                             key={p.id}
                                             className="flex items-center justify-between p-3 rounded-lg bg-muted/50"

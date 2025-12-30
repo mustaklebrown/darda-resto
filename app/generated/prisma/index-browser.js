@@ -134,7 +134,19 @@ exports.Prisma.PlateScalarFieldEnum = {
   description: 'description',
   price: 'price',
   image: 'image',
+  slug: 'slug',
+  isAvailable: 'isAvailable',
   categoryId: 'categoryId',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.FeedbackScalarFieldEnum = {
+  id: 'id',
+  rating: 'rating',
+  comment: 'comment',
+  plateId: 'plateId',
+  userName: 'userName',
+  userEmail: 'userEmail',
   createdAt: 'createdAt'
 };
 
@@ -150,15 +162,33 @@ exports.Prisma.ReservationScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.MenuScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  slug: 'slug',
+  description: 'description',
+  image: 'image',
+  type: 'type',
+  isFeatured: 'isFeatured',
+  isActive: 'isActive',
+  startTime: 'startTime',
+  endTime: 'endTime',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   name: 'name',
   email: 'email',
   emailVerified: 'emailVerified',
   image: 'image',
+  role: 'role',
+  banned: 'banned',
+  banReason: 'banReason',
+  banExpires: 'banExpires',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  role: 'role'
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SessionScalarFieldEnum = {
@@ -169,7 +199,8 @@ exports.Prisma.SessionScalarFieldEnum = {
   updatedAt: 'updatedAt',
   ipAddress: 'ipAddress',
   userAgent: 'userAgent',
-  userId: 'userId'
+  userId: 'userId',
+  impersonatedBy: 'impersonatedBy'
 };
 
 exports.Prisma.AccountScalarFieldEnum = {
@@ -217,10 +248,19 @@ exports.ReservationStatus = exports.$Enums.ReservationStatus = {
   CANCELLED: 'CANCELLED'
 };
 
+exports.MenuType = exports.$Enums.MenuType = {
+  DAILY: 'DAILY',
+  TIME_BASED: 'TIME_BASED',
+  SEASONAL: 'SEASONAL',
+  REGULAR: 'REGULAR'
+};
+
 exports.Prisma.ModelName = {
   Category: 'Category',
   Plate: 'Plate',
+  Feedback: 'Feedback',
   Reservation: 'Reservation',
+  Menu: 'Menu',
   User: 'User',
   Session: 'Session',
   Account: 'Account',

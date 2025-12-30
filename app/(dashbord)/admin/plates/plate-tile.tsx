@@ -45,20 +45,14 @@ import {
 } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
 
-type Plate = {
-    id: string
-    name: string
-    description: string | null
-    price: number
-    image: string | null
-    category: {
-        id: string
-        name: string
-    } | null
-}
+import { Prisma } from '@prisma/client'
+
+type PlateWithCategory = Prisma.PlateGetPayload<{
+    include: { category: true }
+}>
 
 type Props = {
-    plate: Plate
+    plate: PlateWithCategory
 }
 
 export function PlateTile({ plate }: Props) {

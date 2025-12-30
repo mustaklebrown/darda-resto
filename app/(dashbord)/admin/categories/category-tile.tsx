@@ -108,11 +108,11 @@ export function CategoryTile({ category }: Props) {
 
     return (
         <>
-            <Card className="group relative overflow-hidden border-0 shadow-md hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-background to-muted/30">
+            <Card className="group relative overflow-hidden border-0 shadow-md hover:shadow-xl transition-all duration-300 bg-linear-to-br from-background to-muted/30">
                 <CardContent className="p-0">
                     <div className="flex items-center gap-4 p-4">
                         {/* Image */}
-                        <div className="relative h-16 w-16 rounded-xl overflow-hidden bg-muted flex-shrink-0 ring-2 ring-primary/10 group-hover:ring-primary/30 transition-all duration-300">
+                        <div className="relative h-16 w-16 rounded-xl overflow-hidden bg-muted shrink-0 ring-2 ring-primary/10 group-hover:ring-primary/30 transition-all duration-300">
                             {category.image ? (
                                 <Image
                                     src={category.image}
@@ -121,7 +121,7 @@ export function CategoryTile({ category }: Props) {
                                     className="object-cover group-hover:scale-110 transition-transform duration-500"
                                 />
                             ) : (
-                                <div className="h-full w-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
+                                <div className="h-full w-full flex items-center justify-center bg-linear-to-br from-primary/10 to-primary/5">
                                     <FolderOpen className="h-6 w-6 text-primary/50" />
                                 </div>
                             )}
@@ -179,7 +179,7 @@ export function CategoryTile({ category }: Props) {
                     </div>
 
                     {/* Decorative gradient line */}
-                    <div className="h-1 w-full bg-gradient-to-r from-primary/50 via-primary to-primary/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="h-1 w-full bg-linear-to-r from-primary/50 via-primary to-primary/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </CardContent>
             </Card>
 
@@ -216,7 +216,7 @@ export function CategoryTile({ category }: Props) {
                             <Label>Category Image</Label>
                             <div className="flex items-center gap-4">
                                 {/* Current/Preview Image */}
-                                <div className="relative h-20 w-20 rounded-xl overflow-hidden bg-muted flex-shrink-0 border-2 border-dashed border-muted-foreground/30">
+                                <div className="relative h-20 w-20 rounded-xl overflow-hidden bg-muted shrink-0 border-2 border-dashed border-muted-foreground/30">
                                     {editImage ? (
                                         <>
                                             <Image

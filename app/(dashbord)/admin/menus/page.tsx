@@ -15,9 +15,18 @@ import { MenuTile } from './menu-tile'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { Prisma } from '@prisma/client'
+export const menuWithRelations = {
+    plates: { include: { category: true } },
+    categories: true,
+} satisfies Prisma.MenuInclude
+
+export type MenuWithRelations =
+    Prisma.MenuGetPayload<{ include: typeof menuWithRelations }>
+
 
 export default async function AdminMenusPage() {
-    const menus = await getMenus()
+    const menus: MenuWithRelations[] = await getMenus()
 
     // Calculate stats
     const totalMenus = menus.length
