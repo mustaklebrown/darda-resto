@@ -6,6 +6,10 @@ import { Button } from '@/components/ui/button'
 import { ArrowRight, Leaf, Heart, Users } from 'lucide-react'
 import Link from 'next/link'
 
+// Note: metadata must be exported from a Server Component, not a Client Component
+// For client components, consider moving metadata to a parent layout or page
+
+
 export default function AboutPage() {
     return (
         <main className="overflow-hidden">

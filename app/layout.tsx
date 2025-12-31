@@ -17,8 +17,74 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Darda Resto | Saveurs Authentiques des Comores",
-  description: "Découvrez l'excellence culinaire comorienne chez Darda Resto. Plats traditionnels, produits frais et ambiance chaleureuse pour une expérience gastronomique inoubliable.",
+  metadataBase: new URL('https://darda-resto-3eiv.vercel.app'),
+  title: {
+    default: "Darda Resto | Restaurant Comorien à Moroni - Cuisine Authentique des Comores",
+    template: "%s | Darda Resto - Restaurant Comorien Moroni"
+  },
+  description: "Restaurant traditionnel comorien à Moroni, Union des Comores. Découvrez nos plats authentiques, notre menu du jour et réservez votre table. Cuisine locale avec produits frais, ambiance chaleureuse et service exceptionnel.",
+  keywords: [
+    "restaurant Moroni",
+    "restaurant Comores",
+    "cuisine comorienne",
+    "restaurant traditionnel Moroni",
+    "plats comoriens",
+    "gastronomie Comores",
+    "Darda Resto",
+    "restaurant authentique Moroni",
+    "cuisine locale Comores",
+    "réservation restaurant Moroni",
+    "menu comorien",
+    "restaurant Union des Comores",
+    "meilleur restaurant Moroni",
+    "spécialités comoriennes"
+  ],
+  authors: [{ name: "Darda Resto" }],
+  creator: "Darda Resto",
+  publisher: "Darda Resto",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'fr_KM',
+    url: 'https://darda-resto-3eiv.vercel.app',
+    siteName: 'Darda Resto',
+    title: 'Darda Resto | Restaurant Comorien Authentique à Moroni',
+    description: 'Restaurant traditionnel comorien à Moroni. Cuisine authentique, produits frais et ambiance chaleureuse. Réservez votre table dès maintenant.',
+    images: [
+      {
+        url: '/images/hero.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Darda Resto - Restaurant Comorien à Moroni',
+      }
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Darda Resto | Restaurant Comorien à Moroni',
+    description: 'Découvrez la cuisine authentique des Comores à Moroni. Réservez votre table.',
+    images: ['/images/hero.jpg'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  alternates: {
+    canonical: 'https://darda-resto-3eiv.vercel.app',
+  },
+  category: 'restaurant',
+  classification: 'Restaurant, Cuisine Comorienne, Gastronomie',
 };
 
 export default function RootLayout({

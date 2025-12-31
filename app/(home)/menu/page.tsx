@@ -2,8 +2,20 @@
 import prisma from '@/lib/prisma';
 import MenuPageClient from './menu-page-client';
 import { Suspense } from 'react';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: "Notre Menu",
+    description: "Découvrez notre carte complète de plats comoriens authentiques. Entrées, plats principaux, desserts et boissons traditionnelles. Menu mis à jour quotidiennement avec des produits frais locaux.",
+    keywords: ["menu restaurant Moroni", "carte restaurant comorien", "plats comoriens", "menu Darda Resto", "spécialités Comores"],
+    openGraph: {
+        title: "Menu - Darda Resto | Cuisine Comorienne à Moroni",
+        description: "Explorez notre menu de cuisine comorienne authentique avec des plats traditionnels préparés avec des produits frais.",
+    },
+};
 
 export const revalidate = 60; // Revalidate every 60 seconds
+
 
 export default async function MenuPage() {
     // Fetch categories with plates
