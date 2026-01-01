@@ -4,22 +4,31 @@ import ReservationCharts from '@/app/_components/admin/reservation-charts'
 import { format, subDays, startOfDay } from 'date-fns'
 import { fr } from 'date-fns/locale/fr'
 import { Utensils, Tag, Book, TrendingUp, LucideIcon } from 'lucide-react'
+import { headers } from 'next/headers'
+import { cacheLife } from 'next/cache'
 
-export default async function AdminPage() {
-    // Basic counts
-    const [categoriesCount, platesCount, reservationsCount] = await Promise.all([
+// Cached stats counts
+async function getStatsCount() {
+    "use cache"
+    cacheLife("minutes")
+    return await Promise.all([
         prisma.category.count(),
         prisma.plate.count(),
         prisma.reservation.count(),
     ])
+}
 
-    // Fetch reservations for the last 7 days for the chart
+// Cached daily reservations
+async function getDailyReservations() {
+    "use cache"
+    cacheLife("minutes")
+
     const last7Days = Array.from({ length: 7 }, (_, i) => {
         const date = subDays(new Date(), i)
         return startOfDay(date)
     }).reverse()
 
-    const dailyReservations = await Promise.all(
+    return await Promise.all(
         last7Days.map(async (day) => {
             const nextDay = new Date(day)
             nextDay.setDate(day.getDate() + 1)
@@ -38,8 +47,13 @@ export default async function AdminPage() {
             }
         })
     )
+}
 
-    // Fetch status distribution
+// Cached status distribution
+async function getStatusDistribution() {
+    "use cache"
+    cacheLife("minutes")
+
     const statusCounts = await prisma.reservation.groupBy({
         by: ['status'],
         _count: {
@@ -53,11 +67,24 @@ export default async function AdminPage() {
         CANCELLED: { label: 'Annulée', color: '#ef4444' },
     }
 
-    const statusData = statusCounts.map((item: { status: string, _count: { status: number } }) => ({
+    return statusCounts.map((item: { status: string, _count: { status: number } }) => ({
         name: statusMap[item.status]?.label || item.status,
         value: item._count.status,
         color: statusMap[item.status]?.color || '#888888',
     }))
+}
+
+export default async function AdminPage() {
+
+
+    // Basic counts
+    const [categoriesCount, platesCount, reservationsCount] = await getStatsCount()
+
+    // Fetch reservations for the last 7 days for the chart
+    const dailyReservations = await getDailyReservations()
+
+    // Fetch status distribution
+    const statusData = await getStatusDistribution()
 
     return (
         <div className="space-y-10 pb-10">

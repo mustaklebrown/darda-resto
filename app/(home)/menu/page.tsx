@@ -14,12 +14,14 @@ export const metadata: Metadata = {
     },
 };
 
-export const revalidate = 60; // Revalidate every 60 seconds
+import { cacheLife } from 'next/cache';
 
+// Cached function to fetch menu data
+async function getMenuData() {
+    "use cache"
+    cacheLife("hours")
 
-export default async function MenuPage() {
-    // Fetch categories with plates
-    const categories = await prisma?.category.findMany({
+    return await prisma?.category.findMany({
         include: {
             plates: {
                 orderBy: { createdAt: 'desc' }
@@ -27,6 +29,11 @@ export default async function MenuPage() {
         },
         orderBy: { createdAt: 'asc' },
     }) || [];
+}
+
+export default async function MenuPage() {
+    // Fetch categories with plates using cache
+    const categories = await getMenuData()
 
     // Flatten plates for "All" view if needed, or pass structured data
     const allPlates = categories.flatMap(cat => cat.plates.map(plate => ({ ...plate, categorySlug: cat.slug })));

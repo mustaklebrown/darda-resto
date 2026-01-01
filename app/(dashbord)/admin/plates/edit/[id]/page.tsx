@@ -3,12 +3,9 @@ import { PlateForm } from '@/app/_components/plate-form'
 import { updatePlate } from '@/app/(dashbord)/admin/plates/actions'
 import { redirect } from 'next/navigation'
 import { Prisma } from '@/lib/prisma'
+import { Suspense } from 'react'
 
-export default async function EditPlatePage({
-    params,
-}: {
-    params: Promise<{ id: string }>
-}) {
+async function EditPlateContent({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params
     const plate = await prisma.plate.findUnique({
         where: { id: id },
@@ -32,5 +29,13 @@ export default async function EditPlatePage({
             categories={categories}
             onSubmit={submit}
         />
+    )
+}
+
+export default function EditPlatePage({ params }: { params: Promise<{ id: string }> }) {
+    return (
+        <Suspense fallback={<div className="flex items-center justify-center p-8">Chargement...</div>}>
+            <EditPlateContent params={params} />
+        </Suspense>
     )
 }

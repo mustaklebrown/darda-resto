@@ -122,10 +122,8 @@ export function PlateTile({ plate }: Props) {
 
                             {/* Actions dropdown */}
                             <DropdownMenu>
-                                <DropdownMenuTrigger>
-                                    <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">
-                                        <MoreVertical className="h-4 w-4" />
-                                    </Button>
+                                <DropdownMenuTrigger className="inline-flex items-center justify-center h-8 w-8 shrink-0 rounded-lg hover:bg-muted hover:text-foreground transition-colors">
+                                    <MoreVertical className="h-4 w-4" />
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end" className="w-44">
                                     <DropdownMenuItem onClick={() => setPreviewOpen(true)}>

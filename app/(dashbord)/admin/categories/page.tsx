@@ -4,10 +4,20 @@ import prisma, { Category } from '@/lib/prisma'
 import { CategoryTile } from './category-tile'
 import { CategoryForm } from './category-form'
 
-export default async function CategoriesPage() {
-    const categories: Category[] = await prisma.category.findMany({
+import { headers } from 'next/headers'
+import { cacheLife } from 'next/cache'
+
+async function getCategories() {
+    "use cache"
+    cacheLife("minutes")
+    return await prisma.category.findMany({
         orderBy: { createdAt: 'desc' },
     })
+}
+
+export default async function CategoriesPage() {
+
+    const categories: Category[] = await getCategories()
 
     return (
         <div className="space-y-6">

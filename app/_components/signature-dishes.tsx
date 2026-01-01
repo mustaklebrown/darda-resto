@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { ArrowRight, Star } from 'lucide-react'
 import Link from 'next/link'
+import { Suspense } from 'react'
 
 
 interface SignatureDishesProps {
@@ -109,6 +110,7 @@ export default function SignatureDishes({ dishes }: SignatureDishesProps) {
                         </motion.div>
                     ))}
                 </div>
+
 
                 {/* Mobile CTA */}
                 <div className="mt-12 flex justify-center lg:hidden">

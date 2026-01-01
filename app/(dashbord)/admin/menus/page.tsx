@@ -1,21 +1,22 @@
 import Link from 'next/link'
 import { isWithinInterval } from 'date-fns'
+import { cacheLife } from 'next/cache'
 import {
     Plus,
     UtensilsCrossed,
     Sparkles,
-    FolderOpen,
     LayoutGrid,
     Power,
     CalendarCheck,
 } from 'lucide-react'
 
-import { getMenus } from '@/app/actions/menu'
+// import { getMenus } from '@/app/actions/menu' // Removed
 import { MenuTile } from './menu-tile'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Prisma } from '@/lib/prisma'
+import prisma, { Prisma } from '@/lib/prisma' // Adjusted import
+
 export const menuWithRelations = {
     plates: { include: { category: true } },
     categories: true,
@@ -24,22 +25,33 @@ export const menuWithRelations = {
 export type MenuWithRelations =
     Prisma.MenuGetPayload<{ include: typeof menuWithRelations }>
 
+async function getMenusData() {
+    "use cache"
+    cacheLife("minutes")
+    const menus = await prisma.menu.findMany({
+        orderBy: { createdAt: 'desc' },
+        include: {
+            plates: {
+                include: {
+                    category: true,
+                },
+            },
+            categories: true,
+        },
+    });
 
-export default async function AdminMenusPage() {
-    const menus: MenuWithRelations[] = await getMenus()
-
-    // Calculate stats
+    // Calculate stats inside the cached function
     const totalMenus = menus.length
     const activeMenus = menus.filter(m => m.isActive).length
     const featuredMenus = menus.filter(m => m.isFeatured).length
 
-    // Get today's menus (DAILY type or within schedule)
+    const now = new Date()
     const todayMenus = menus.filter(m => {
         if (!m.isActive) return false
         if (m.type === 'DAILY') return true
         if (m.startTime && m.endTime) {
             try {
-                return isWithinInterval(new Date(), {
+                return isWithinInterval(now, {
                     start: new Date(m.startTime),
                     end: new Date(m.endTime)
                 })
@@ -49,6 +61,15 @@ export default async function AdminMenusPage() {
         }
         return false
     }).length
+
+    return { menus, stats: { totalMenus, activeMenus, featuredMenus, todayMenus } }
+}
+
+
+export default async function AdminMenusPage() {
+
+    const { menus, stats } = await getMenusData()
+    const { totalMenus, activeMenus, featuredMenus, todayMenus } = stats
 
     return (
         <div className="space-y-8">

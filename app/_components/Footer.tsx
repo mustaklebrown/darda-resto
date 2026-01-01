@@ -1,6 +1,14 @@
+'use client'
 
+import { useEffect, useState } from "react"
 
 const Footer = () => {
+    const [year, setYear] = useState(2025)
+
+    useEffect(() => {
+        setYear(new Date().getFullYear())
+    }, [])
+
     return (
         <footer className="relative mt-24 border-t border-border/40">
             {/* Glass background */}
@@ -60,7 +68,7 @@ const Footer = () => {
 
                 {/* Bottom */}
                 <div className="mt-14 flex flex-col sm:flex-row items-center justify-between text-sm text-muted-foreground">
-                    <span>© {new Date().getFullYear()} Comores Kitchen. Tous droits réservés.</span>
+                    <span>© {year} Comores Kitchen. Tous droits réservés.</span>
                     <span className="mt-4 sm:mt-0">
                         Conçu avec soin & tradition
                     </span>

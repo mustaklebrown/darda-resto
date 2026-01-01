@@ -1,12 +1,19 @@
 import prisma from '@/lib/prisma'
-
+import { Suspense } from 'react'
 import { createPlate } from '../actions'
 import { redirect } from 'next/navigation'
 import { PlateForm } from '@/app/_components/plate-form'
 import { Prisma } from '@/lib/prisma'
+import { cacheLife } from 'next/cache'
 
-export default async function NewPlatePage() {
-    const categories = await prisma.category.findMany()
+async function getCategories() {
+    "use cache"
+    cacheLife("minutes")
+    return await prisma.category.findMany()
+}
+
+async function NewPlateContent() {
+    const categories = await getCategories()
 
     async function submit(data: Prisma.PlateCreateInput) {
         'use server'
@@ -26,5 +33,13 @@ export default async function NewPlatePage() {
             }}
             onSubmit={submit}
         />
+    )
+}
+
+export default function NewPlatePage() {
+    return (
+        <Suspense fallback={<div className="flex items-center justify-center p-8">Chargement...</div>}>
+            <NewPlateContent />
+        </Suspense>
     )
 }

@@ -6,6 +6,10 @@ import { motion } from 'framer-motion'
 import { Sparkles, Clock, UtensilsCrossed } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Suspense } from 'react'
+
+
+
 
 type TodayMenu = {
     id: string
@@ -88,63 +92,65 @@ export default function HeroSection({ todayMenu }: HeroProps) {
                         </motion.div>
 
                         {/* RIGHT — Today's Menu Card */}
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.95, y: 30 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            transition={{ duration: 0.8, ease: 'easeOut', delay: 0.2 }}
-                            className="relative w-full max-w-md mx-auto lg:mx-0"
-                        >
-                            <div className="relative overflow-hidden rounded-3xl border border-white/20 bg-white/10 backdrop-blur-xl shadow-2xl p-6 sm:p-8">
-                                {/* Ribbon */}
-                                <div className="absolute top-0 right-0">
-                                    <div className="absolute right-[-34px] top-[32px] w-[170px] transform rotate-45 bg-primary py-1 text-center text-xs font-bold uppercase text-white shadow-sm">
-                                        Frais du Jour
+                        <Suspense fallback={<div>Loading...</div>}>
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.95, y: 30 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                transition={{ duration: 0.8, ease: 'easeOut', delay: 0.2 }}
+                                className="relative w-full max-w-md mx-auto lg:mx-0"
+                            >
+                                <div className="relative overflow-hidden rounded-3xl border border-white/20 bg-white/10 backdrop-blur-xl shadow-2xl p-6 sm:p-8">
+                                    {/* Ribbon */}
+                                    <div className="absolute top-0 right-0">
+                                        <div className="absolute right-[-34px] top-[32px] w-[170px] transform rotate-45 bg-primary py-1 text-center text-xs font-bold uppercase text-white shadow-sm">
+                                            Frais du Jour
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div className="mb-6 pr-8">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <Badge className="bg-white/20 text-white border-0 gap-1">
-                                            <Clock className="h-3 w-3" />
-                                            Menu du Jour
-                                        </Badge>
-                                    </div>
-                                    <h2 className="text-2xl font-bold text-white">
-                                        {todayMenu?.name || "Spécialités du Jour"}
-                                    </h2>
-                                    <p className="text-white/70 text-sm mt-1">
-                                        {todayMenu?.description || "La sélection du Chef"}
-                                    </p>
-                                </div>
-
-                                {todayMenu && todayMenu.plates.length > 0 ? (
-                                    <ul className="space-y-4">
-                                        {todayMenu.plates.slice(0, 4).map((plate) => (
-                                            <ListItem
-                                                key={plate.id}
-                                                name={plate.name}
-                                                price={`${plate.price.toFixed(2)}€`}
-                                            />
-                                        ))}
-                                    </ul>
-                                ) : (
-                                    <div className="text-center py-8">
-                                        <UtensilsCrossed className="h-10 w-10 text-white/30 mx-auto mb-3" />
-                                        <p className="text-white/60 text-sm">
-                                            Découvrez nos plats du jour
+                                    <div className="mb-6 pr-8">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <Badge className="bg-white/20 text-white border-0 gap-1">
+                                                <Clock className="h-3 w-3" />
+                                                Menu du Jour
+                                            </Badge>
+                                        </div>
+                                        <h2 className="text-2xl font-bold text-white">
+                                            {todayMenu?.name || "Spécialités du Jour"}
+                                        </h2>
+                                        <p className="text-white/70 text-sm mt-1">
+                                            {todayMenu?.description || "La sélection du Chef"}
                                         </p>
                                     </div>
-                                )}
 
-                                <Link href="/menu">
-                                    <Button
-                                        className="mt-8 w-full rounded-xl bg-white/20 hover:bg-white/30 text-white font-semibold border border-white/10 h-11"
-                                    >
-                                        Voir le Menu Complet
-                                    </Button>
-                                </Link>
-                            </div>
-                        </motion.div>
+                                    {todayMenu && todayMenu.plates.length > 0 ? (
+                                        <ul className="space-y-4">
+                                            {todayMenu.plates.slice(0, 4).map((plate) => (
+                                                <ListItem
+                                                    key={plate.id}
+                                                    name={plate.name}
+                                                    price={`${plate.price.toFixed(2)}€`}
+                                                />
+                                            ))}
+                                        </ul>
+                                    ) : (
+                                        <div className="text-center py-8">
+                                            <UtensilsCrossed className="h-10 w-10 text-white/30 mx-auto mb-3" />
+                                            <p className="text-white/60 text-sm">
+                                                Découvrez nos plats du jour
+                                            </p>
+                                        </div>
+                                    )}
+
+                                    <Link href="/menu">
+                                        <Button
+                                            className="mt-8 w-full rounded-xl bg-white/20 hover:bg-white/30 text-white font-semibold border border-white/10 h-11"
+                                        >
+                                            Voir le Menu Complet
+                                        </Button>
+                                    </Link>
+                                </div>
+                            </motion.div>
+                        </Suspense>
 
                     </div>
                 </div>

@@ -153,12 +153,9 @@ export function CategoryTile({ category }: Props) {
                                 <Pencil className="h-4 w-4" />
                             </Button>
 
-                            {/* Dropdown Menu */}
                             <DropdownMenu>
-                                <DropdownMenuTrigger>
-                                    <Button variant="ghost" size="icon" className="h-9 w-9">
-                                        <MoreVertical className="h-4 w-4" />
-                                    </Button>
+                                <DropdownMenuTrigger className="inline-flex items-center justify-center h-9 w-9 rounded-lg hover:bg-muted hover:text-foreground transition-colors">
+                                    <MoreVertical className="h-4 w-4" />
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end" className="w-48">
                                     <DropdownMenuItem onClick={() => setEditOpen(true)}>

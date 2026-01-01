@@ -13,11 +13,21 @@ import { PlateTile } from './plate-tile'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 
-export default async function PlatesPage() {
-    const plates = await prisma.plate.findMany({
+import { headers } from 'next/headers'
+import { cacheLife } from 'next/cache'
+
+async function getPlates() {
+    "use cache"
+    cacheLife("minutes")
+    return await prisma.plate.findMany({
         include: { category: true },
         orderBy: { createdAt: 'desc' },
     })
+}
+
+export default async function PlatesPage() {
+
+    const plates = await getPlates()
 
     // Calculate stats
     const totalPlates = plates.length

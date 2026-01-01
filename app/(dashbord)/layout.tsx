@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense, useEffect } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+// import { usePathname } from 'next/navigation' 
 import {
     LayoutDashboard,
     Tag,
@@ -36,7 +36,12 @@ const sidebarItems = [
 ]
 
 function SidebarContent({ onLinkClick }: { onLinkClick?: () => void }) {
-    const pathname = usePathname()
+    // Avoid usePathname() during prerender to prevent "Uncached data" build errors in Next.js 16.1
+    const [pathname, setPathname] = useState("")
+
+    useEffect(() => {
+        setPathname(window.location.pathname)
+    }, [])
 
     return (
         <>
@@ -135,7 +140,9 @@ export default function AdminLayout({
                                 </SheetTitle>
                             </SheetHeader>
                             <div className="flex flex-col h-[calc(100%-80px)] p-5">
-                                <SidebarContent onLinkClick={() => setMobileOpen(false)} />
+                                <Suspense>
+                                    <SidebarContent onLinkClick={() => setMobileOpen(false)} />
+                                </Suspense>
                             </div>
                         </SheetContent>
                     </Sheet>
@@ -164,7 +171,9 @@ export default function AdminLayout({
                             shadow-xl shadow-black/5
                         "
                     >
-                        <SidebarContent />
+                        <Suspense>
+                            <SidebarContent />
+                        </Suspense>
                     </aside>
 
                     {/* Content */}
@@ -176,4 +185,3 @@ export default function AdminLayout({
         </div>
     )
 }
-

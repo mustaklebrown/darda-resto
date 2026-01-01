@@ -80,10 +80,10 @@ export default function MenuForm({ menu, plates, categories }: MenuFormProps) {
             description: menu?.description ?? '',
             isFeatured: menu?.isFeatured ?? false,
             startTime: menu?.startTime
-                ? menu.startTime.toISOString().slice(0, 16)
+                ? new Date(menu.startTime).toISOString().slice(0, 16)
                 : '',
             endTime: menu?.endTime
-                ? menu.endTime.toISOString().slice(0, 16)
+                ? new Date(menu.endTime).toISOString().slice(0, 16)
                 : '',
             plates: menu?.plates?.map((p) => p.id) ?? [],
             categories: menu?.categories?.map((c) => c.id) ?? [],

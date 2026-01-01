@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useEffect } from 'react'
 import Link from 'next/link'
 import { format, isWithinInterval } from 'date-fns'
 import {
@@ -26,7 +26,6 @@ import { deleteMenuAction, toggleFeaturedMenu, toggleActiveMenu } from '@/app/ac
 import { Prisma, MenuType } from '@/lib/prisma'
 import { menuWithRelations } from './page'
 
-import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Switch } from '@/components/ui/switch'
@@ -135,14 +134,20 @@ export function MenuTile({ menu }: Props) {
         })
     }
 
+    const [now, setNow] = useState<Date | null>(null)
+
+    useEffect(() => {
+        setNow(new Date())
+    }, [])
+
     const hasSchedule = !!(menu.startTime && menu.endTime)
     const typeInfo = getMenuTypeInfo(menu.type)
     const TypeIcon = typeInfo.icon
 
     // Check if this is "Today's Menu" - active and currently within time range
     const isTodayMenu = menu.type === 'DAILY' || (
-        hasSchedule &&
-        isWithinInterval(new Date(), {
+        hasSchedule && now &&
+        isWithinInterval(now, {
             start: new Date(menu.startTime!),
             end: new Date(menu.endTime!)
         })
@@ -199,10 +204,8 @@ export function MenuTile({ menu }: Props) {
                             {/* Actions */}
                             <div className="flex items-center gap-2 shrink-0">
                                 <DropdownMenu>
-                                    <DropdownMenuTrigger>
-                                        <Button variant="ghost" size="icon" className="h-9 w-9">
-                                            <MoreVertical className="h-4 w-4" />
-                                        </Button>
+                                    <DropdownMenuTrigger className="inline-flex items-center justify-center h-9 w-9 rounded-lg hover:bg-muted hover:text-foreground transition-colors">
+                                        <MoreVertical className="h-4 w-4" />
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end" className="w-48">
                                         <DropdownMenuItem onClick={() => setPreviewOpen(true)}>

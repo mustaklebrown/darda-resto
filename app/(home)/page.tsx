@@ -1,4 +1,6 @@
 import { isWithinInterval } from 'date-fns'
+import { cacheLife } from 'next/cache'
+
 import Hero from "../_components/Hero";
 import MenuCategories from "../_components/menu-categories";
 import SignatureDishes from "../_components/signature-dishes";
@@ -20,20 +22,26 @@ export const metadata: Metadata = {
     },
 };
 
+// Cached function to fetch categories
+async function getCategories() {
+    "use cache"
+    cacheLife("hours")
 
-
-export default async function Page() {
-    // Fetch categories with plate count
-    const categories = await prisma.category.findMany({
+    return await prisma.category.findMany({
         include: {
             _count: {
                 select: { plates: true }
             }
         }
     })
+}
 
-    // Fetch all active menus to find today's menu and featured menu
-    const menus = await prisma.menu.findMany({
+// Cached function to fetch active menus
+async function getActiveMenus() {
+    "use cache"
+    cacheLife("hours")
+
+    return await prisma.menu.findMany({
         where: {
             isActive: true,
         },
@@ -49,9 +57,17 @@ export default async function Page() {
             createdAt: 'desc'
         }
     })
+}
+
+// Cached function to fetch display data (today's menu, featured)
+async function getDisplayMenus() {
+    "use cache"
+    cacheLife("minutes")
+
+    const menus = await getActiveMenus()
+    const now = new Date()
 
     // Find today's menu: DAILY type or within schedule
-    const now = new Date()
     const todayMenu = menus.find(menu => {
         if (menu.type === 'DAILY') return true
         if (menu.startTime && menu.endTime) {
@@ -69,6 +85,16 @@ export default async function Page() {
 
     // Find featured menu for signature dishes
     const featuredMenu = menus.find(m => m.isFeatured)
+
+    return { todayMenu, featuredMenu }
+}
+
+export default async function Page() {
+    // Fetch categories with plate count using cache
+    const categories = await getCategories()
+
+    // Fetch display menus (today/featured) using cache which handles date logic safely
+    const { todayMenu, featuredMenu } = await getDisplayMenus()
 
     // Get signature dishes from featured menu, limited to 3
     const signatureDishes = featuredMenu?.plates.slice(0, 3) || []
