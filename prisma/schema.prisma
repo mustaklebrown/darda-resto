@@ -17,8 +17,8 @@ model Category {
   slug      String   @unique
   image     String?
   createdAt DateTime @default(now())
-  Plate     Plate[]
-  Menu      Menu[]
+  plates    Plate[]
+  menus     Menu[]
 }
 
 model Feedback {
@@ -29,7 +29,7 @@ model Feedback {
   userName  String?
   userEmail String?
   createdAt DateTime @default(now())
-  Plate     Plate    @relation(fields: [plateId], references: [id], onDelete: Cascade)
+  plate     Plate    @relation(fields: [plateId], references: [id], onDelete: Cascade)
 }
 
 model Menu {
@@ -45,8 +45,8 @@ model Menu {
   endTime     DateTime?
   createdAt   DateTime   @default(now())
   updatedAt   DateTime
-  Category    Category[]
-  Plate       Plate[]
+  categories  Category[]
+  plates      Plate[]
 }
 
 model Plate {
@@ -59,9 +59,9 @@ model Plate {
   createdAt   DateTime   @default(now())
   isAvailable Boolean    @default(true)
   slug        String?    @unique
-  Feedback    Feedback[]
-  Category    Category   @relation(fields: [categoryId], references: [id])
-  Menu        Menu[]
+  feedback    Feedback[]
+  category    Category   @relation(fields: [categoryId], references: [id])
+  menus       Menu[]
 }
 
 model Reservation {
