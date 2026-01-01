@@ -12,7 +12,7 @@ datasource db {
 }
 
 model Category {
-  id        String   @id
+  id        String   @id @default(cuid())
   name      String
   slug      String   @unique
   image     String?
@@ -22,7 +22,7 @@ model Category {
 }
 
 model Feedback {
-  id        String   @id
+  id        String   @id @default(cuid())
   rating    Int
   comment   String?
   plateId   String
@@ -33,7 +33,7 @@ model Feedback {
 }
 
 model Menu {
-  id          String     @id
+  id          String     @id @default(cuid())
   name        String
   slug        String     @unique
   description String?
@@ -44,13 +44,13 @@ model Menu {
   startTime   DateTime?
   endTime     DateTime?
   createdAt   DateTime   @default(now())
-  updatedAt   DateTime
+  updatedAt   DateTime   @updatedAt
   categories  Category[]
   plates      Plate[]
 }
 
 model Plate {
-  id          String     @id
+  id          String     @id @default(cuid())
   name        String
   description String
   price       Float
@@ -65,7 +65,7 @@ model Plate {
 }
 
 model Reservation {
-  id        String            @id
+  id        String            @id @default(cuid())
   name      String
   email     String
   phone     String
@@ -77,7 +77,7 @@ model Reservation {
 }
 
 model account {
-  id                    String    @id
+  id                    String    @id @default(cuid())
   accountId             String
   providerId            String
   userId                String
@@ -89,18 +89,18 @@ model account {
   scope                 String?
   password              String?
   createdAt             DateTime  @default(now())
-  updatedAt             DateTime
+  updatedAt             DateTime  @updatedAt
   user                  user      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
 
 model session {
-  id             String   @id
+  id             String   @id @default(cuid())
   expiresAt      DateTime
   token          String   @unique
   createdAt      DateTime @default(now())
-  updatedAt      DateTime
+  updatedAt      DateTime @updatedAt
   ipAddress      String?
   userAgent      String?
   userId         String
@@ -111,13 +111,13 @@ model session {
 }
 
 model user {
-  id            String    @id
+  id            String    @id @default(cuid())
   name          String
   email         String    @unique
   emailVerified Boolean   @default(false)
   image         String?
   createdAt     DateTime  @default(now())
-  updatedAt     DateTime
+  updatedAt     DateTime  @updatedAt
   role          String    @default("user")
   banned        Boolean   @default(false)
   banReason     String?
@@ -127,12 +127,12 @@ model user {
 }
 
 model verification {
-  id         String   @id
+  id         String   @id @default(cuid())
   identifier String
   value      String
   expiresAt  DateTime
   createdAt  DateTime @default(now())
-  updatedAt  DateTime
+  updatedAt  DateTime @updatedAt
 
   @@index([identifier])
 }

@@ -2,7 +2,8 @@
 
 import prisma from '@/lib/prisma';
 import { menuSchema } from '@/lib/validators/menu';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
+import { randomUUID } from 'crypto';
 
 type ActionResult = { success: true } | { success: false; error: string };
 
@@ -16,7 +17,6 @@ export async function updateMenuAction(menuId: string, data: any) {
         isFeatured: data.isFeatured,
         startTime: data.startTime ? new Date(data.startTime) : null,
         endTime: data.endTime ? new Date(data.endTime) : null,
-
         plates: {
           set: data.plates.map((id: string) => ({ id })),
         },
@@ -26,6 +26,9 @@ export async function updateMenuAction(menuId: string, data: any) {
       },
     });
 
+    revalidatePath('/admin/menus');
+    revalidateTag('menus', 'max');
+    revalidateTag('menu-data', 'max');
     return { success: true };
   } catch (error) {
     return { success: false, error: 'Failed to update menu' };
@@ -38,24 +41,36 @@ export async function deleteMenuAction(id: string) {
   });
 
   revalidatePath('/admin/menus');
+  revalidateTag('menus', 'max');
+  revalidateTag('menu-data', 'max');
 }
 
 export async function toggleFeaturedMenu(id: string, value: boolean) {
   await prisma.menu.update({
     where: { id },
-    data: { isFeatured: value },
+    data: {
+      isFeatured: value,
+      updatedAt: new Date(),
+    },
   });
 
   revalidatePath('/admin/menus');
+  revalidateTag('menus', 'max');
+  revalidateTag('menu-data', 'max');
 }
 
 export async function toggleActiveMenu(id: string, value: boolean) {
   await prisma.menu.update({
     where: { id },
-    data: { isActive: value },
+    data: {
+      isActive: value,
+      updatedAt: new Date(),
+    },
   });
 
   revalidatePath('/admin/menus');
+  revalidateTag('menus', 'max');
+  revalidateTag('menu-data', 'max');
 }
 
 export async function getMenus() {
@@ -110,8 +125,11 @@ export async function createMenuAction(values: unknown): Promise<ActionResult> {
     });
 
     revalidatePath('/admin/menus');
+    revalidateTag('menus', 'max');
+    revalidateTag('menu-data', 'max');
     return { success: true };
   } catch (error) {
+    console.error(error);
     return { success: false, error: 'Failed to create menu' };
   }
 }

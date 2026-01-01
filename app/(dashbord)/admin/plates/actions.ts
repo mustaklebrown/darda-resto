@@ -23,7 +23,6 @@ export async function deletePlate(id: string) {
 export async function createPlate(data: PlateData) {
   await prisma.plate.create({
     data: {
-      id: randomUUID(),
       name: data.name,
       description: data.description,
       price: data.price,

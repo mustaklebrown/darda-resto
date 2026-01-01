@@ -7,7 +7,6 @@ import { randomUUID } from 'crypto';
 export async function createCategory(data: { name: string; image: string }) {
   await prisma.category.create({
     data: {
-      id: randomUUID(),
       name: data.name,
       slug: data.name.toLowerCase().replace(/\s+/g, '-'),
       image: data.image,
