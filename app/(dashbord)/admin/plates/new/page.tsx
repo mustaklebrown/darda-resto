@@ -3,19 +3,23 @@ import { Suspense } from 'react'
 import { createPlate } from '../actions'
 import { redirect } from 'next/navigation'
 import { PlateForm } from '@/app/_components/plate-form'
-import { Prisma } from '@/lib/prisma'
 import { cacheLife } from 'next/cache'
 
 async function getCategories() {
     "use cache"
     cacheLife("minutes")
-    return await prisma.category.findMany()
+    try {
+        return await prisma.category.findMany()
+    } catch (error) {
+        console.error("Error fetching categories:", error)
+        return []
+    }
 }
 
 async function NewPlateContent() {
     const categories = await getCategories()
 
-    async function submit(data: Prisma.PlateCreateInput) {
+    async function submit(data: { name: string; description: string; price: number; categoryId: string; image?: string }) {
         'use server'
         await createPlate(data)
         redirect('/admin/plates')
