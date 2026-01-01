@@ -14,12 +14,13 @@ export const metadata: Metadata = {
     },
 };
 
-import { cacheLife } from 'next/cache';
+import { cacheLife, cacheTag } from 'next/cache';
 
-// Cached function to fetch menu data
+// Cached function to fetch menu data with cache tag for revalidation
 async function getMenuData() {
     "use cache"
-    cacheLife("hours")
+    cacheTag("menu-data", "plates", "categories")
+    cacheLife("minutes")
 
     return await prisma?.category.findMany({
         include: {

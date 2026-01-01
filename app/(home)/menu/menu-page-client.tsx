@@ -47,6 +47,7 @@ export default function MenuPageClient({ categories, allPlates }: MenuPageClient
         setActiveCategory(slug);
         if (slug === 'all') {
             router.push('/menu', { scroll: false });
+
         } else {
             router.push(`/menu?category=${slug}`, { scroll: false });
         }

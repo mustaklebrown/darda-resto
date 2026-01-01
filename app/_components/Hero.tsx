@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Sparkles, Clock, UtensilsCrossed } from 'lucide-react'
+import { Clock, UtensilsCrossed } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Suspense } from 'react'

@@ -1,23 +1,7 @@
-// import prisma from '@/lib/prisma';
-// import { NextResponse } from 'next/server';
-
-// export async function POST(req: Request) {
-//   const { name } = await req.json();
-
-//   await prisma.category.create({
-//     data: {
-//       name,
-//       slug: name.toLowerCase().replace(/\s+/g, '-'),
-//     },
-//   });
-
-//   return NextResponse.json({ success: true });
-// }
-
 'use server';
 
 import prisma from '@/lib/prisma';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 
 export async function createCategory(data: { name: string; image: string }) {
   await prisma.category.create({
@@ -28,6 +12,8 @@ export async function createCategory(data: { name: string; image: string }) {
     },
   });
   revalidatePath('/admin/categories');
+  revalidateTag('categories', 'max');
+  revalidateTag('menu-data', 'max');
 }
 
 export async function updateCategory(
@@ -39,9 +25,13 @@ export async function updateCategory(
     data,
   });
   revalidatePath('/admin/categories');
+  revalidateTag('categories', 'max');
+  revalidateTag('menu-data', 'max');
 }
 
 export async function deleteCategory(id: string) {
   await prisma.category.delete({ where: { id } });
   revalidatePath('/admin/categories');
+  revalidateTag('categories', 'max');
+  revalidateTag('menu-data', 'max');
 }

@@ -1,5 +1,5 @@
 import { isWithinInterval } from 'date-fns'
-import { cacheLife } from 'next/cache'
+import { cacheLife, cacheTag } from 'next/cache'
 
 import Hero from "../_components/Hero";
 import MenuCategories from "../_components/menu-categories";
@@ -25,6 +25,7 @@ export const metadata: Metadata = {
 // Cached function to fetch categories
 async function getCategories() {
     "use cache"
+    cacheTag("categories", "home-data")
     cacheLife("hours")
 
     return await prisma.category.findMany({
@@ -39,6 +40,7 @@ async function getCategories() {
 // Cached function to fetch active menus
 async function getActiveMenus() {
     "use cache"
+    cacheTag("menus", "home-data")
     cacheLife("hours")
 
     return await prisma.menu.findMany({
@@ -62,6 +64,7 @@ async function getActiveMenus() {
 // Cached function to fetch display data (today's menu, featured)
 async function getDisplayMenus() {
     "use cache"
+    cacheTag("menus", "home-data")
     cacheLife("minutes")
 
     const menus = await getActiveMenus()
