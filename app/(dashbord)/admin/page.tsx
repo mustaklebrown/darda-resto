@@ -11,11 +11,16 @@ import { cacheLife } from 'next/cache'
 async function getStatsCount() {
     "use cache"
     cacheLife("minutes")
-    return await Promise.all([
-        prisma.category.count(),
-        prisma.plate.count(),
-        prisma.reservation.count(),
-    ])
+    try {
+        return await Promise.all([
+            prisma.category.count(),
+            prisma.plate.count(),
+            prisma.reservation.count(),
+        ])
+    } catch (error) {
+        console.error("Error fetching stats:", error)
+        return [0, 0, 0]
+    }
 }
 
 // Cached daily reservations
@@ -23,30 +28,35 @@ async function getDailyReservations() {
     "use cache"
     cacheLife("minutes")
 
-    const last7Days = Array.from({ length: 7 }, (_, i) => {
-        const date = subDays(new Date(), i)
-        return startOfDay(date)
-    }).reverse()
+    try {
+        const last7Days = Array.from({ length: 7 }, (_, i) => {
+            const date = subDays(new Date(), i)
+            return startOfDay(date)
+        }).reverse()
 
-    return await Promise.all(
-        last7Days.map(async (day) => {
-            const nextDay = new Date(day)
-            nextDay.setDate(day.getDate() + 1)
+        return await Promise.all(
+            last7Days.map(async (day) => {
+                const nextDay = new Date(day)
+                nextDay.setDate(day.getDate() + 1)
 
-            const count = await prisma.reservation.count({
-                where: {
-                    createdAt: {
-                        gte: day,
-                        lt: nextDay,
+                const count = await prisma.reservation.count({
+                    where: {
+                        createdAt: {
+                            gte: day,
+                            lt: nextDay,
+                        },
                     },
-                },
+                })
+                return {
+                    date: format(day, 'EEE dd', { locale: fr }),
+                    count,
+                }
             })
-            return {
-                date: format(day, 'EEE dd', { locale: fr }),
-                count,
-            }
-        })
-    )
+        )
+    } catch (error) {
+        console.error("Error fetching daily reservations:", error)
+        return []
+    }
 }
 
 // Cached status distribution
@@ -54,24 +64,29 @@ async function getStatusDistribution() {
     "use cache"
     cacheLife("minutes")
 
-    const statusCounts = await prisma.reservation.groupBy({
-        by: ['status'],
-        _count: {
-            status: true,
-        },
-    })
+    try {
+        const statusCounts = await prisma.reservation.groupBy({
+            by: ['status'],
+            _count: {
+                status: true,
+            },
+        })
 
-    const statusMap: Record<string, { label: string, color: string }> = {
-        PENDING: { label: 'En attente', color: '#f59e0b' },
-        CONFIRMED: { label: 'Confirmée', color: '#10b981' },
-        CANCELLED: { label: 'Annulée', color: '#ef4444' },
+        const statusMap: Record<string, { label: string, color: string }> = {
+            PENDING: { label: 'En attente', color: '#f59e0b' },
+            CONFIRMED: { label: 'Confirmée', color: '#10b981' },
+            CANCELLED: { label: 'Annulée', color: '#ef4444' },
+        }
+
+        return statusCounts.map((item: { status: string, _count: { status: number } }) => ({
+            name: statusMap[item.status]?.label || item.status,
+            value: item._count.status,
+            color: statusMap[item.status]?.color || '#888888',
+        }))
+    } catch (error) {
+        console.error("Error fetching status distribution:", error)
+        return []
     }
-
-    return statusCounts.map((item: { status: string, _count: { status: number } }) => ({
-        name: statusMap[item.status]?.label || item.status,
-        value: item._count.status,
-        color: statusMap[item.status]?.color || '#888888',
-    }))
 }
 
 export default async function AdminPage() {

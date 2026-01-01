@@ -19,10 +19,15 @@ import { cacheLife } from 'next/cache'
 async function getPlates() {
     "use cache"
     cacheLife("minutes")
-    return await prisma.plate.findMany({
-        include: { category: true },
-        orderBy: { createdAt: 'desc' },
-    })
+    try {
+        return await prisma.plate.findMany({
+            include: { category: true },
+            orderBy: { createdAt: 'desc' },
+        })
+    } catch (error) {
+        console.error("Error fetching plates:", error)
+        return []
+    }
 }
 
 export default async function PlatesPage() {

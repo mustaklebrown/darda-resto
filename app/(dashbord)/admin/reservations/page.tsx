@@ -11,9 +11,21 @@ async function ReservationsList() {
     "use cache"
     cacheLife("minutes")
 
-    const reservations: Reservation[] = await prisma.reservation.findMany({
-        orderBy: { createdAt: 'desc' },
-    })
+    let reservations: Reservation[] = []
+
+    try {
+        reservations = await prisma.reservation.findMany({
+            orderBy: { createdAt: 'desc' },
+        })
+    } catch (error) {
+        console.error("Error fetching reservations:", error)
+        return (
+            <div className="text-center py-20 rounded-[2rem] border border-dashed border-border/40 bg-muted/5">
+                <p className="text-destructive mb-2">Erreur lors du chargement des données.</p>
+                <p className="text-muted-foreground text-sm">Veuillez réessayer plus tard.</p>
+            </div>
+        )
+    }
 
     if (reservations.length === 0) {
         return (

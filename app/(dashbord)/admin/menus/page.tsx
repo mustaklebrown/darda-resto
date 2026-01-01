@@ -28,41 +28,55 @@ export type MenuWithRelations =
 async function getMenusData() {
     "use cache"
     cacheLife("minutes")
-    const menus = await prisma.menu.findMany({
-        orderBy: { createdAt: 'desc' },
-        include: {
-            plates: {
-                include: {
-                    category: true,
+
+    try {
+        const menus = await prisma.menu.findMany({
+            orderBy: { createdAt: 'desc' },
+            include: {
+                plates: {
+                    include: {
+                        category: true,
+                    },
                 },
+                categories: true,
             },
-            categories: true,
-        },
-    });
+        });
 
-    // Calculate stats inside the cached function
-    const totalMenus = menus.length
-    const activeMenus = menus.filter(m => m.isActive).length
-    const featuredMenus = menus.filter(m => m.isFeatured).length
+        // Calculate stats inside the cached function
+        const totalMenus = menus.length
+        const activeMenus = menus.filter(m => m.isActive).length
+        const featuredMenus = menus.filter(m => m.isFeatured).length
 
-    const now = new Date()
-    const todayMenus = menus.filter(m => {
-        if (!m.isActive) return false
-        if (m.type === 'DAILY') return true
-        if (m.startTime && m.endTime) {
-            try {
-                return isWithinInterval(now, {
-                    start: new Date(m.startTime),
-                    end: new Date(m.endTime)
-                })
-            } catch {
-                return false
+        const now = new Date()
+        const todayMenus = menus.filter(m => {
+            if (!m.isActive) return false
+            if (m.type === 'DAILY') return true
+            if (m.startTime && m.endTime) {
+                try {
+                    return isWithinInterval(now, {
+                        start: new Date(m.startTime),
+                        end: new Date(m.endTime)
+                    })
+                } catch {
+                    return false
+                }
+            }
+            return false
+        }).length
+
+        return { menus, stats: { totalMenus, activeMenus, featuredMenus, todayMenus } }
+    } catch (error) {
+        console.error("Error fetching menus:", error)
+        return {
+            menus: [],
+            stats: {
+                totalMenus: 0,
+                activeMenus: 0,
+                featuredMenus: 0,
+                todayMenus: 0
             }
         }
-        return false
-    }).length
-
-    return { menus, stats: { totalMenus, activeMenus, featuredMenus, todayMenus } }
+    }
 }
 
 

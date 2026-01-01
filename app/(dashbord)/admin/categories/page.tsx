@@ -10,9 +10,14 @@ import { cacheLife } from 'next/cache'
 async function getCategories() {
     "use cache"
     cacheLife("minutes")
-    return await prisma.category.findMany({
-        orderBy: { createdAt: 'desc' },
-    })
+    try {
+        return await prisma.category.findMany({
+            orderBy: { createdAt: 'desc' },
+        })
+    } catch (error) {
+        console.error("Error fetching categories:", error)
+        return []
+    }
 }
 
 export default async function CategoriesPage() {
