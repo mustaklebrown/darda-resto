@@ -28,13 +28,18 @@ async function getCategories() {
     cacheTag("categories", "home-data")
     cacheLife("hours")
 
-    return await prisma.category.findMany({
-        include: {
-            _count: {
-                select: { plates: true }
+    try {
+        return await prisma.category.findMany({
+            include: {
+                _count: {
+                    select: { plates: true }
+                }
             }
-        }
-    })
+        })
+    } catch (error) {
+        console.error("Error fetching categories:", error)
+        return []
+    }
 }
 
 // Cached function to fetch active menus
@@ -43,22 +48,27 @@ async function getActiveMenus() {
     cacheTag("menus", "home-data")
     cacheLife("hours")
 
-    return await prisma.menu.findMany({
-        where: {
-            isActive: true,
-        },
-        include: {
-            plates: {
-                include: {
-                    category: true
-                }
+    try {
+        return await prisma.menu.findMany({
+            where: {
+                isActive: true,
             },
-            categories: true,
-        },
-        orderBy: {
-            createdAt: 'desc'
-        }
-    })
+            include: {
+                plates: {
+                    include: {
+                        category: true
+                    }
+                },
+                categories: true,
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        })
+    } catch (error) {
+        console.error("Error fetching menus:", error)
+        return []
+    }
 }
 
 // Cached function to fetch display data (today's menu, featured)

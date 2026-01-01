@@ -22,14 +22,19 @@ async function getMenuData() {
     cacheTag("menu-data", "plates", "categories")
     cacheLife("minutes")
 
-    return await prisma?.category.findMany({
-        include: {
-            plates: {
-                orderBy: { createdAt: 'desc' }
-            }
-        },
-        orderBy: { createdAt: 'asc' },
-    }) || [];
+    try {
+        return await prisma?.category.findMany({
+            include: {
+                plates: {
+                    orderBy: { createdAt: 'desc' }
+                }
+            },
+            orderBy: { createdAt: 'asc' },
+        }) || [];
+    } catch (error) {
+        console.error("Error fetching menu data:", error)
+        return []
+    }
 }
 
 export default async function MenuPage() {
