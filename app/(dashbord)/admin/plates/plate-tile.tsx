@@ -11,13 +11,11 @@ import {
     UtensilsCrossed,
     Eye,
     Tag,
-    DollarSign,
 } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { deletePlate } from './actions'
 
-import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -48,7 +46,7 @@ import { Separator } from '@/components/ui/separator'
 import { Prisma } from '@/lib/prisma'
 
 type PlateWithCategory = Prisma.PlateGetPayload<{
-    include: { category: true }
+    include: { categoryPlate: true }
 }>
 
 type Props = {
@@ -103,11 +101,11 @@ export function PlateTile({ plate }: Props) {
                         </div>
 
                         {/* Category badge */}
-                        {plate.category && (
+                        {plate.categoryPlate && (
                             <div className="absolute bottom-3 left-3">
                                 <Badge variant="secondary" className="gap-1 backdrop-blur-sm bg-background/80">
                                     <Tag className="h-3 w-3" />
-                                    {plate.category.name}
+                                    {plate.categoryPlate.name}
                                 </Badge>
                             </div>
                         )}
@@ -192,10 +190,10 @@ export function PlateTile({ plate }: Props) {
                         </div>
 
                         {/* Category */}
-                        {plate.category && (
+                        {plate.categoryPlate && (
                             <Badge variant="secondary" className="gap-1">
                                 <Tag className="h-3 w-3" />
-                                {plate.category.name}
+                                {plate.categoryPlate.name}
                             </Badge>
                         )}
 
@@ -226,7 +224,7 @@ export function PlateTile({ plate }: Props) {
                             Supprimer le plat ?
                         </AlertDialogTitle>
                         <AlertDialogDescription>
-                            Êtes-vous sûr de vouloir supprimer <strong>"{plate.name}"</strong> ?
+                            Êtes-vous sûr de vouloir supprimer <strong>&quot;{plate.name}&quot;</strong> ?
                             Cette action est irréversible.
                         </AlertDialogDescription>
                     </AlertDialogHeader>

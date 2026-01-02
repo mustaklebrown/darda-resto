@@ -120,7 +120,7 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
-exports.Prisma.CategoryScalarFieldEnum = {
+exports.Prisma.CategoryPlateScalarFieldEnum = {
   id: 'id',
   name: 'name',
   slug: 'slug',
@@ -128,15 +128,11 @@ exports.Prisma.CategoryScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
-exports.Prisma.PlateScalarFieldEnum = {
+exports.Prisma.CategoryMenuScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  description: 'description',
-  price: 'price',
-  image: 'image',
   slug: 'slug',
-  isAvailable: 'isAvailable',
-  categoryId: 'categoryId',
+  image: 'image',
   createdAt: 'createdAt'
 };
 
@@ -147,18 +143,6 @@ exports.Prisma.FeedbackScalarFieldEnum = {
   plateId: 'plateId',
   userName: 'userName',
   userEmail: 'userEmail',
-  createdAt: 'createdAt'
-};
-
-exports.Prisma.ReservationScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  email: 'email',
-  phone: 'phone',
-  date: 'date',
-  guests: 'guests',
-  message: 'message',
-  status: 'status',
   createdAt: 'createdAt'
 };
 
@@ -174,33 +158,32 @@ exports.Prisma.MenuScalarFieldEnum = {
   startTime: 'startTime',
   endTime: 'endTime',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  categoryMenuId: 'categoryMenuId'
 };
 
-exports.Prisma.UserScalarFieldEnum = {
+exports.Prisma.PlateScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  price: 'price',
+  image: 'image',
+  categoryId: 'categoryId',
+  createdAt: 'createdAt',
+  isAvailable: 'isAvailable',
+  slug: 'slug'
+};
+
+exports.Prisma.ReservationScalarFieldEnum = {
   id: 'id',
   name: 'name',
   email: 'email',
-  emailVerified: 'emailVerified',
-  image: 'image',
-  role: 'role',
-  banned: 'banned',
-  banReason: 'banReason',
-  banExpires: 'banExpires',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.SessionScalarFieldEnum = {
-  id: 'id',
-  expiresAt: 'expiresAt',
-  token: 'token',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  ipAddress: 'ipAddress',
-  userAgent: 'userAgent',
-  userId: 'userId',
-  impersonatedBy: 'impersonatedBy'
+  phone: 'phone',
+  date: 'date',
+  guests: 'guests',
+  message: 'message',
+  status: 'status',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.AccountScalarFieldEnum = {
@@ -217,6 +200,32 @@ exports.Prisma.AccountScalarFieldEnum = {
   password: 'password',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SessionScalarFieldEnum = {
+  id: 'id',
+  expiresAt: 'expiresAt',
+  token: 'token',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  userId: 'userId',
+  impersonatedBy: 'impersonatedBy'
+};
+
+exports.Prisma.UserScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  email: 'email',
+  emailVerified: 'emailVerified',
+  image: 'image',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  role: 'role',
+  banned: 'banned',
+  banReason: 'banReason',
+  banExpires: 'banExpires'
 };
 
 exports.Prisma.VerificationScalarFieldEnum = {
@@ -242,12 +251,6 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-exports.ReservationStatus = exports.$Enums.ReservationStatus = {
-  PENDING: 'PENDING',
-  CONFIRMED: 'CONFIRMED',
-  CANCELLED: 'CANCELLED'
-};
-
 exports.MenuType = exports.$Enums.MenuType = {
   DAILY: 'DAILY',
   TIME_BASED: 'TIME_BASED',
@@ -255,16 +258,23 @@ exports.MenuType = exports.$Enums.MenuType = {
   REGULAR: 'REGULAR'
 };
 
+exports.ReservationStatus = exports.$Enums.ReservationStatus = {
+  PENDING: 'PENDING',
+  CONFIRMED: 'CONFIRMED',
+  CANCELLED: 'CANCELLED'
+};
+
 exports.Prisma.ModelName = {
-  Category: 'Category',
-  Plate: 'Plate',
+  CategoryPlate: 'CategoryPlate',
+  CategoryMenu: 'CategoryMenu',
   Feedback: 'Feedback',
-  Reservation: 'Reservation',
   Menu: 'Menu',
-  User: 'User',
-  Session: 'Session',
-  Account: 'Account',
-  Verification: 'Verification'
+  Plate: 'Plate',
+  Reservation: 'Reservation',
+  account: 'account',
+  session: 'session',
+  user: 'user',
+  verification: 'verification'
 };
 
 /**

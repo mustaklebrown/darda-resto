@@ -4,7 +4,6 @@ import { Calendar, Users, Mail, Phone, Clock, MessageSquare } from 'lucide-react
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale/fr'
 import { Suspense } from 'react'
-import { headers } from 'next/headers'
 import { cacheLife } from 'next/cache'
 
 async function ReservationsList() {

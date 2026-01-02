@@ -93,7 +93,7 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
-exports.Prisma.CategoryScalarFieldEnum = {
+exports.Prisma.CategoryPlateScalarFieldEnum = {
   id: 'id',
   name: 'name',
   slug: 'slug',
@@ -101,15 +101,11 @@ exports.Prisma.CategoryScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
-exports.Prisma.PlateScalarFieldEnum = {
+exports.Prisma.CategoryMenuScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  description: 'description',
-  price: 'price',
-  image: 'image',
   slug: 'slug',
-  isAvailable: 'isAvailable',
-  categoryId: 'categoryId',
+  image: 'image',
   createdAt: 'createdAt'
 };
 
@@ -120,18 +116,6 @@ exports.Prisma.FeedbackScalarFieldEnum = {
   plateId: 'plateId',
   userName: 'userName',
   userEmail: 'userEmail',
-  createdAt: 'createdAt'
-};
-
-exports.Prisma.ReservationScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  email: 'email',
-  phone: 'phone',
-  date: 'date',
-  guests: 'guests',
-  message: 'message',
-  status: 'status',
   createdAt: 'createdAt'
 };
 
@@ -147,33 +131,32 @@ exports.Prisma.MenuScalarFieldEnum = {
   startTime: 'startTime',
   endTime: 'endTime',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  categoryMenuId: 'categoryMenuId'
 };
 
-exports.Prisma.UserScalarFieldEnum = {
+exports.Prisma.PlateScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  price: 'price',
+  image: 'image',
+  categoryId: 'categoryId',
+  createdAt: 'createdAt',
+  isAvailable: 'isAvailable',
+  slug: 'slug'
+};
+
+exports.Prisma.ReservationScalarFieldEnum = {
   id: 'id',
   name: 'name',
   email: 'email',
-  emailVerified: 'emailVerified',
-  image: 'image',
-  role: 'role',
-  banned: 'banned',
-  banReason: 'banReason',
-  banExpires: 'banExpires',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.SessionScalarFieldEnum = {
-  id: 'id',
-  expiresAt: 'expiresAt',
-  token: 'token',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  ipAddress: 'ipAddress',
-  userAgent: 'userAgent',
-  userId: 'userId',
-  impersonatedBy: 'impersonatedBy'
+  phone: 'phone',
+  date: 'date',
+  guests: 'guests',
+  message: 'message',
+  status: 'status',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.AccountScalarFieldEnum = {
@@ -190,6 +173,32 @@ exports.Prisma.AccountScalarFieldEnum = {
   password: 'password',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SessionScalarFieldEnum = {
+  id: 'id',
+  expiresAt: 'expiresAt',
+  token: 'token',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  userId: 'userId',
+  impersonatedBy: 'impersonatedBy'
+};
+
+exports.Prisma.UserScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  email: 'email',
+  emailVerified: 'emailVerified',
+  image: 'image',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  role: 'role',
+  banned: 'banned',
+  banReason: 'banReason',
+  banExpires: 'banExpires'
 };
 
 exports.Prisma.VerificationScalarFieldEnum = {
@@ -215,12 +224,6 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-exports.ReservationStatus = exports.$Enums.ReservationStatus = {
-  PENDING: 'PENDING',
-  CONFIRMED: 'CONFIRMED',
-  CANCELLED: 'CANCELLED'
-};
-
 exports.MenuType = exports.$Enums.MenuType = {
   DAILY: 'DAILY',
   TIME_BASED: 'TIME_BASED',
@@ -228,16 +231,23 @@ exports.MenuType = exports.$Enums.MenuType = {
   REGULAR: 'REGULAR'
 };
 
+exports.ReservationStatus = exports.$Enums.ReservationStatus = {
+  PENDING: 'PENDING',
+  CONFIRMED: 'CONFIRMED',
+  CANCELLED: 'CANCELLED'
+};
+
 exports.Prisma.ModelName = {
-  Category: 'Category',
-  Plate: 'Plate',
+  CategoryPlate: 'CategoryPlate',
+  CategoryMenu: 'CategoryMenu',
   Feedback: 'Feedback',
-  Reservation: 'Reservation',
   Menu: 'Menu',
-  User: 'User',
-  Session: 'Session',
-  Account: 'Account',
-  Verification: 'Verification'
+  Plate: 'Plate',
+  Reservation: 'Reservation',
+  account: 'account',
+  session: 'session',
+  user: 'user',
+  verification: 'verification'
 };
 /**
  * Create the Client
@@ -247,10 +257,10 @@ const config = {
   "clientVersion": "7.2.0",
   "engineVersion": "0c8ef2ce45c83248ab3df073180d5eda9e8be7a3",
   "activeProvider": "postgresql",
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"./\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel Category {\n  id        String   @id @default(cuid())\n  name      String\n  slug      String   @unique\n  image     String?\n  plates    Plate[]\n  menus     Menu[] // many-to-many\n  createdAt DateTime @default(now())\n}\n\nmodel Plate {\n  id          String  @id @default(cuid())\n  name        String\n  description String\n  price       Float\n  image       String?\n  slug        String? @unique\n  isAvailable Boolean @default(true)\n\n  categoryId String\n  category   Category @relation(fields: [categoryId], references: [id])\n\n  menus     Menu[] // many-to-many\n  feedbacks Feedback[]\n\n  createdAt DateTime @default(now())\n}\n\nmodel Feedback {\n  id      String  @id @default(cuid())\n  rating  Int // 1..5\n  comment String?\n\n  plateId String\n  plate   Plate  @relation(fields: [plateId], references: [id], onDelete: Cascade)\n\n  userName  String?\n  userEmail String?\n\n  createdAt DateTime @default(now())\n}\n\nmodel Reservation {\n  id        String            @id @default(cuid())\n  name      String\n  email     String\n  phone     String\n  date      DateTime\n  guests    Int\n  message   String?\n  status    ReservationStatus @default(PENDING)\n  createdAt DateTime          @default(now())\n}\n\nenum ReservationStatus {\n  PENDING\n  CONFIRMED\n  CANCELLED\n}\n\nenum MenuType {\n  DAILY\n  TIME_BASED\n  SEASONAL\n  REGULAR\n}\n\nmodel Menu {\n  id          String  @id @default(cuid())\n  name        String\n  slug        String  @unique\n  description String?\n  image       String?\n\n  type MenuType @default(REGULAR)\n\n  isFeatured Boolean @default(false)\n  isActive   Boolean @default(true)\n\n  startTime DateTime?\n  endTime   DateTime?\n\n  plates     Plate[] // many-to-many\n  categories Category[] // many-to-many\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\nmodel User {\n  id            String  @id @default(cuid())\n  name          String\n  email         String  @unique\n  emailVerified Boolean @default(false)\n  image         String?\n\n  role       String    @default(\"user\")\n  banned     Boolean   @default(false)\n  banReason  String?\n  banExpires DateTime?\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  sessions Session[]\n  accounts Account[]\n\n  @@map(\"user\")\n}\n\nmodel Session {\n  id        String   @id @default(cuid())\n  expiresAt DateTime\n  token     String   @unique\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  ipAddress String?\n  userAgent String?\n\n  userId String\n  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  impersonatedBy String?\n\n  @@index([userId])\n  @@map(\"session\")\n}\n\nmodel Account {\n  id         String @id @default(cuid())\n  accountId  String\n  providerId String\n  userId     String\n  user       User   @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  accessToken           String?\n  refreshToken          String?\n  idToken               String?\n  accessTokenExpiresAt  DateTime?\n  refreshTokenExpiresAt DateTime?\n  scope                 String?\n  password              String?\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@index([userId])\n  @@map(\"account\")\n}\n\nmodel Verification {\n  id         String   @id @default(cuid())\n  identifier String\n  value      String\n  expiresAt  DateTime\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@index([identifier])\n  @@map(\"verification\")\n}\n"
+  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n}\n\ngenerator dev {\n  provider = \"prisma-client-js\"\n  output   = \"../app/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel CategoryPlate {\n  id        String   @id @default(cuid())\n  name      String\n  slug      String   @unique\n  image     String?\n  createdAt DateTime @default(now())\n  plates    Plate[]\n  menus     Menu[]\n}\n\nmodel CategoryMenu {\n  id        String   @id @default(cuid())\n  name      String\n  slug      String   @unique\n  image     String?\n  createdAt DateTime @default(now())\n  menus     Menu[]\n}\n\nmodel Feedback {\n  id        String   @id @default(cuid())\n  rating    Int\n  comment   String?\n  plateId   String\n  userName  String?\n  userEmail String?\n  createdAt DateTime @default(now())\n  plate     Plate    @relation(fields: [plateId], references: [id], onDelete: Cascade)\n}\n\nmodel Menu {\n  id             String          @id @default(cuid())\n  name           String\n  slug           String          @unique\n  description    String?\n  image          String?\n  type           MenuType        @default(REGULAR)\n  isFeatured     Boolean         @default(false)\n  isActive       Boolean         @default(true)\n  startTime      DateTime?\n  endTime        DateTime?\n  createdAt      DateTime        @default(now())\n  updatedAt      DateTime        @updatedAt\n  categoryMenuId String?\n  categoryMenu   CategoryMenu?   @relation(fields: [categoryMenuId], references: [id])\n  categoryPlates CategoryPlate[]\n  plates         Plate[]\n}\n\nmodel Plate {\n  id            String        @id @default(cuid())\n  name          String\n  description   String\n  price         Float\n  image         String?\n  categoryId    String\n  createdAt     DateTime      @default(now())\n  isAvailable   Boolean       @default(true)\n  slug          String?       @unique\n  feedback      Feedback[]\n  categoryPlate CategoryPlate @relation(fields: [categoryId], references: [id])\n  menus         Menu[]\n}\n\nmodel Reservation {\n  id        String            @id @default(cuid())\n  name      String\n  email     String\n  phone     String\n  date      DateTime\n  guests    Int\n  message   String?\n  status    ReservationStatus @default(PENDING)\n  createdAt DateTime          @default(now())\n}\n\nmodel account {\n  id                    String    @id @default(cuid())\n  accountId             String\n  providerId            String\n  userId                String\n  accessToken           String?\n  refreshToken          String?\n  idToken               String?\n  accessTokenExpiresAt  DateTime?\n  refreshTokenExpiresAt DateTime?\n  scope                 String?\n  password              String?\n  createdAt             DateTime  @default(now())\n  updatedAt             DateTime  @updatedAt\n  user                  user      @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@index([userId])\n}\n\nmodel session {\n  id             String   @id @default(cuid())\n  expiresAt      DateTime\n  token          String   @unique\n  createdAt      DateTime @default(now())\n  updatedAt      DateTime @updatedAt\n  ipAddress      String?\n  userAgent      String?\n  userId         String\n  impersonatedBy String?\n  user           user     @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@index([userId])\n}\n\nmodel user {\n  id            String    @id @default(cuid())\n  name          String\n  email         String    @unique\n  emailVerified Boolean   @default(false)\n  image         String?\n  createdAt     DateTime  @default(now())\n  updatedAt     DateTime  @updatedAt\n  role          String    @default(\"user\")\n  banned        Boolean   @default(false)\n  banReason     String?\n  banExpires    DateTime?\n  account       account[]\n  session       session[]\n}\n\nmodel verification {\n  id         String   @id @default(cuid())\n  identifier String\n  value      String\n  expiresAt  DateTime\n  createdAt  DateTime @default(now())\n  updatedAt  DateTime @updatedAt\n\n  @@index([identifier])\n}\n\nenum MenuType {\n  DAILY\n  TIME_BASED\n  SEASONAL\n  REGULAR\n}\n\nenum ReservationStatus {\n  PENDING\n  CONFIRMED\n  CANCELLED\n}\n"
 }
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"Category\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"slug\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"plates\",\"kind\":\"object\",\"type\":\"Plate\",\"relationName\":\"CategoryToPlate\"},{\"name\":\"menus\",\"kind\":\"object\",\"type\":\"Menu\",\"relationName\":\"CategoryToMenu\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Plate\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"slug\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"isAvailable\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"categoryId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"category\",\"kind\":\"object\",\"type\":\"Category\",\"relationName\":\"CategoryToPlate\"},{\"name\":\"menus\",\"kind\":\"object\",\"type\":\"Menu\",\"relationName\":\"MenuToPlate\"},{\"name\":\"feedbacks\",\"kind\":\"object\",\"type\":\"Feedback\",\"relationName\":\"FeedbackToPlate\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Feedback\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"rating\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"comment\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"plateId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"plate\",\"kind\":\"object\",\"type\":\"Plate\",\"relationName\":\"FeedbackToPlate\"},{\"name\":\"userName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userEmail\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Reservation\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"guests\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"message\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"ReservationStatus\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Menu\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"slug\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"enum\",\"type\":\"MenuType\"},{\"name\":\"isFeatured\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"isActive\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"startTime\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"endTime\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"plates\",\"kind\":\"object\",\"type\":\"Plate\",\"relationName\":\"MenuToPlate\"},{\"name\":\"categories\",\"kind\":\"object\",\"type\":\"Category\",\"relationName\":\"CategoryToMenu\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailVerified\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"banned\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"banReason\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"banExpires\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"sessions\",\"kind\":\"object\",\"type\":\"Session\",\"relationName\":\"SessionToUser\"},{\"name\":\"accounts\",\"kind\":\"object\",\"type\":\"Account\",\"relationName\":\"AccountToUser\"}],\"dbName\":\"user\"},\"Session\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"ipAddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userAgent\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"SessionToUser\"},{\"name\":\"impersonatedBy\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":\"session\"},\"Account\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accountId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"providerId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"AccountToUser\"},{\"name\":\"accessToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"refreshToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"idToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accessTokenExpiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"refreshTokenExpiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"scope\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"account\"},\"Verification\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"identifier\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"value\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"verification\"}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"CategoryPlate\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"slug\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"plates\",\"kind\":\"object\",\"type\":\"Plate\",\"relationName\":\"CategoryPlateToPlate\"},{\"name\":\"menus\",\"kind\":\"object\",\"type\":\"Menu\",\"relationName\":\"CategoryPlateToMenu\"}],\"dbName\":null},\"CategoryMenu\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"slug\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"menus\",\"kind\":\"object\",\"type\":\"Menu\",\"relationName\":\"CategoryMenuToMenu\"}],\"dbName\":null},\"Feedback\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"rating\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"comment\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"plateId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userEmail\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"plate\",\"kind\":\"object\",\"type\":\"Plate\",\"relationName\":\"FeedbackToPlate\"}],\"dbName\":null},\"Menu\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"slug\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"enum\",\"type\":\"MenuType\"},{\"name\":\"isFeatured\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"isActive\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"startTime\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"endTime\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"categoryMenuId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"categoryMenu\",\"kind\":\"object\",\"type\":\"CategoryMenu\",\"relationName\":\"CategoryMenuToMenu\"},{\"name\":\"categoryPlates\",\"kind\":\"object\",\"type\":\"CategoryPlate\",\"relationName\":\"CategoryPlateToMenu\"},{\"name\":\"plates\",\"kind\":\"object\",\"type\":\"Plate\",\"relationName\":\"MenuToPlate\"}],\"dbName\":null},\"Plate\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"categoryId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"isAvailable\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"slug\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"feedback\",\"kind\":\"object\",\"type\":\"Feedback\",\"relationName\":\"FeedbackToPlate\"},{\"name\":\"categoryPlate\",\"kind\":\"object\",\"type\":\"CategoryPlate\",\"relationName\":\"CategoryPlateToPlate\"},{\"name\":\"menus\",\"kind\":\"object\",\"type\":\"Menu\",\"relationName\":\"MenuToPlate\"}],\"dbName\":null},\"Reservation\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"guests\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"message\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"ReservationStatus\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"account\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accountId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"providerId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accessToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"refreshToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"idToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accessTokenExpiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"refreshTokenExpiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"scope\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"user\",\"relationName\":\"accountTouser\"}],\"dbName\":null},\"session\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"ipAddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userAgent\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"impersonatedBy\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"user\",\"relationName\":\"sessionTouser\"}],\"dbName\":null},\"user\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailVerified\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"role\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"banned\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"banReason\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"banExpires\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"account\",\"kind\":\"object\",\"type\":\"account\",\"relationName\":\"accountTouser\"},{\"name\":\"session\",\"kind\":\"object\",\"type\":\"session\",\"relationName\":\"sessionTouser\"}],\"dbName\":null},\"verification\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"identifier\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"value\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.compilerWasm = {
       getRuntime: async () => require('./query_compiler_bg.js'),

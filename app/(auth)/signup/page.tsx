@@ -8,35 +8,37 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import Link from 'next/link'
 
-import { loginSchema } from '@/lib/validators/auth'
-import { LoginInput, signInAction } from '@/app/actions/auth'
+import { signupSchema } from '@/lib/validators/auth'
+import { signUpAction } from '@/app/actions/auth'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Mail, Lock, LogIn, Loader2, ArrowLeft } from 'lucide-react'
+import { Mail, Lock, User, UserPlus, Loader2, ArrowLeft } from 'lucide-react'
 
-type LoginFormData = z.infer<typeof loginSchema>
+type SignupFormData = z.infer<typeof signupSchema>
 
-export default function LoginPage() {
+export default function SignupPage() {
     const router = useRouter()
     const [isPending, startTransition] = useTransition()
     const [serverError, setServerError] = useState('')
 
-    const form = useForm<LoginFormData>({
-        resolver: zodResolver(loginSchema),
+    const form = useForm<SignupFormData>({
+        resolver: zodResolver(signupSchema),
         defaultValues: {
+            name: '',
             email: '',
             password: '',
         },
     })
-    async function onSubmit(values: LoginInput) {
+
+    async function onSubmit(values: SignupFormData) {
         setServerError('')
 
         startTransition(async () => {
             try {
-                const result = await signInAction(values)
+                const result = await signUpAction(values)
 
-                if ('error' in result) {
+                if (result.success === false) {
                     setServerError(result.error)
                     return
                 }
@@ -46,7 +48,7 @@ export default function LoginPage() {
                 if (error instanceof Error) {
                     setServerError(error.message)
                 } else {
-                    setServerError('Une erreur est survenue lors de la connexion')
+                    setServerError('Une erreur est survenue lors de l\'inscription')
                 }
             }
         })
@@ -56,30 +58,31 @@ export default function LoginPage() {
         <main className="min-h-screen pt-32 pb-20 relative overflow-hidden flex items-center justify-center">
             {/* Background Decorations */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-primary/5 rounded-full blur-[120px] -z-10" />
-            <div className="absolute bottom-1/4 left-1/4 w-[300px] h-[300px] bg-blue-500/5 rounded-full blur-[100px] -z-10" />
+            <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-purple-500/5 rounded-full blur-[100px] -z-10" />
 
             <div className="w-full max-w-md px-6">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="rounded-[2.5rem] border border-border/40 bg-card/40 backdrop-blur-2xl p-8 md:p-10 shadow-2xl relative overflow-hidden"
+                    transition={{ duration: 0.6 }}
+                    className="rounded-[2.5rem] border border-border/40 bg-card/40 backdrop-blur-2xl p-8 md:p-10 shadow-2xl relative"
                 >
-                    {/* Decorative aura */}
-                    <div className="absolute -top-10 -left-10 w-32 h-32 bg-primary/10 rounded-full blur-3xl -z-10" />
+                    {/* Decorative elements inside card */}
+                    <div className="absolute -top-12 -right-12 w-24 h-24 bg-primary/20 rounded-full blur-2xl -z-10" />
 
                     <div className="text-center mb-10">
                         <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-primary/20">
-                            <LogIn className="w-8 h-8 text-primary" />
+                            <UserPlus className="w-8 h-8 text-primary" />
                         </div>
-                        <h1 className="text-3xl font-extrabold mb-2 tracking-tight">Connexion</h1>
+                        <h1 className="text-3xl font-extrabold mb-2 tracking-tight">Inscription</h1>
                         <p className="text-muted-foreground">
-                            Accédez au panneau d&apos;administration
+                            Créez votre compte administrateur
                         </p>
                     </div>
 
                     <form
                         onSubmit={form.handleSubmit(onSubmit)}
-                        className="space-y-6"
+                        className="space-y-5"
                     >
                         {serverError && (
                             <motion.div
@@ -92,6 +95,25 @@ export default function LoginPage() {
                             </motion.div>
                         )}
 
+                        {/* Name */}
+                        <div className="space-y-1.5">
+                            <label className="text-sm font-bold ml-1 flex items-center gap-2 text-foreground/80">
+                                <User className="w-4 h-4 text-primary/70" />
+                                Nom complet
+                            </label>
+                            <Input
+                                type="text"
+                                placeholder="Jean Dupont"
+                                {...form.register('name')}
+                                className="h-12 rounded-xl bg-background/50 border-border/50 focus:border-primary/50 transition-all"
+                            />
+                            {form.formState.errors.name && (
+                                <p className="text-destructive text-[11px] font-medium ml-1 mt-1">
+                                    {form.formState.errors.name.message}
+                                </p>
+                            )}
+                        </div>
+
                         {/* Email */}
                         <div className="space-y-1.5">
                             <label className="text-sm font-bold ml-1 flex items-center gap-2 text-foreground/80">
@@ -100,7 +122,7 @@ export default function LoginPage() {
                             </label>
                             <Input
                                 type="email"
-                                placeholder="admin@darda.com"
+                                placeholder="votre@email.com"
                                 {...form.register('email')}
                                 className="h-12 rounded-xl bg-background/50 border-border/50 focus:border-primary/50 transition-all"
                             />
@@ -133,23 +155,23 @@ export default function LoginPage() {
                         <Button
                             type="submit"
                             disabled={isPending}
-                            className="w-full h-14 rounded-2xl text-lg font-bold shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all group"
+                            className="w-full h-14 rounded-2xl text-lg font-bold shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all mt-4 group"
                         >
                             {isPending ? (
                                 <Loader2 className="w-5 h-5 animate-spin" />
                             ) : (
                                 <span className="flex items-center gap-2">
-                                    <LogIn className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                                    Se connecter
+                                    <UserPlus className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                                    Créer mon compte
                                 </span>
                             )}
                         </Button>
 
                         <div className="text-center pt-4">
                             <p className="text-sm text-muted-foreground">
-                                Vous n&apos;avez pas de compte ?{' '}
-                                <Link href="/signup" className="text-primary font-bold hover:text-primary/80 transition-colors">
-                                    S&apos;inscrire
+                                Vous avez déjà un compte ?{' '}
+                                <Link href="/login" className="text-primary font-bold hover:text-primary/80 transition-colors">
+                                    Se connecter
                                 </Link>
                             </p>
                         </div>

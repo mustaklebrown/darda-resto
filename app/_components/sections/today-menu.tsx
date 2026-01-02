@@ -27,12 +27,12 @@ type TodayMenuProps = {
             price: number
             description: string
             image: string | null
-            category: {
+            categoryPlate: {
                 id: string
                 name: string
             } | null
         }[]
-        categories: {
+        categoryPlates: {
             id: string
             name: string
         }[]
@@ -70,7 +70,7 @@ export default function TodayMenuSection({ menu }: TodayMenuProps) {
                 </motion.div>
 
                 {/* Categories Tabs */}
-                {menu.categories.length > 0 && (
+                {menu.categoryPlates.length > 0 && (
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -78,7 +78,7 @@ export default function TodayMenuSection({ menu }: TodayMenuProps) {
                         transition={{ duration: 0.6, delay: 0.1 }}
                         className="flex flex-wrap justify-center gap-3 mb-10"
                     >
-                        {menu.categories.map((cat) => (
+                        {menu.categoryPlates.map((cat) => (
                             <Badge
                                 key={cat.id}
                                 variant="secondary"
@@ -123,10 +123,10 @@ export default function TodayMenuSection({ menu }: TodayMenuProps) {
                                             </Badge>
                                         </div>
                                         {/* Category */}
-                                        {plate.category && (
+                                        {plate.categoryPlate && (
                                             <div className="absolute bottom-4 left-4">
                                                 <Badge variant="secondary" className="backdrop-blur-sm bg-background/80">
-                                                    {plate.category.name}
+                                                    {plate.categoryPlate.name}
                                                 </Badge>
                                             </div>
                                         )}

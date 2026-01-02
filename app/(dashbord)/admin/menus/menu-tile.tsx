@@ -137,6 +137,7 @@ export function MenuTile({ menu }: Props) {
     const [now, setNow] = useState<Date | null>(null)
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setNow(new Date())
     }, [])
 
@@ -239,11 +240,11 @@ export function MenuTile({ menu }: Props) {
                             </Badge>
                             <Badge variant="secondary" className="gap-1.5 px-3 py-1">
                                 <FolderOpen className="h-3 w-3" />
-                                {menu.categories.length} catégories
+                                {menu.categoryPlates.length} catégories
                             </Badge>
                             {hasSchedule && (
                                 <Badge variant="outline" className="gap-1.5 px-3 py-1 text-blue-600 border-blue-200 bg-blue-50 dark:bg-blue-950/30 dark:border-blue-800">
-                                    <Calendar className="h-3 w-3" />
+                                    <Calendar className="h-4 w-4" />
                                     Programmé
                                 </Badge>
                             )}
@@ -364,13 +365,13 @@ export function MenuTile({ menu }: Props) {
                         <Separator />
 
                         {/* Categories */}
-                        {menu.categories.length > 0 && (
+                        {menu.categoryPlates.length > 0 && (
                             <div className="space-y-2">
                                 <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-                                    Catégories ({menu.categories.length})
+                                    Catégories ({menu.categoryPlates.length})
                                 </h4>
                                 <div className="flex flex-wrap gap-2">
-                                    {menu.categories.map((c) => (
+                                    {menu.categoryPlates.map((c) => (
                                         <Badge key={c.id} variant="outline">
                                             {c.name}
                                         </Badge>
@@ -393,9 +394,9 @@ export function MenuTile({ menu }: Props) {
                                         >
                                             <div>
                                                 <span className="font-medium">{p.name}</span>
-                                                {p.category && (
+                                                {p.categoryPlate && (
                                                     <span className="text-xs text-muted-foreground ml-2">
-                                                        ({p.category.name})
+                                                        ({p.categoryPlate.name})
                                                     </span>
                                                 )}
                                             </div>
@@ -408,7 +409,7 @@ export function MenuTile({ menu }: Props) {
                             </div>
                         )}
 
-                        {menu.plates.length === 0 && menu.categories.length === 0 && (
+                        {menu.plates.length === 0 && menu.categoryPlates.length === 0 && (
                             <p className="text-center text-muted-foreground py-4">
                                 Aucune catégorie ou plat ajouté.
                             </p>
@@ -428,7 +429,7 @@ export function MenuTile({ menu }: Props) {
                             Supprimer le menu ?
                         </AlertDialogTitle>
                         <AlertDialogDescription>
-                            Êtes-vous sûr de vouloir supprimer <strong>"{menu.name}"</strong> ?
+                            Êtes-vous sûr de vouloir supprimer <strong>&quot;{menu.name}&quot;</strong> ?
                             Cette action est irréversible.
                         </AlertDialogDescription>
                     </AlertDialogHeader>

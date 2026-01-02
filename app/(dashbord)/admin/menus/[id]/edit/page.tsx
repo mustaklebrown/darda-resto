@@ -8,13 +8,13 @@ async function getMenuData(id: string) {
             where: { id },
             include: {
                 plates: true,
-                categories: true,
+                categoryPlates: true,
             },
         }),
         prisma.plate.findMany({
             orderBy: { name: "asc" },
         }),
-        prisma.category.findMany({
+        prisma.categoryPlate.findMany({
             orderBy: { name: "asc" },
         })
     ])

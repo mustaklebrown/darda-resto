@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { isWithinInterval } from 'date-fns'
 import { cacheLife } from 'next/cache'
+import { Suspense } from 'react'
 import {
     Plus,
     UtensilsCrossed,
@@ -8,6 +9,7 @@ import {
     LayoutGrid,
     Power,
     CalendarCheck,
+    Loader2
 } from 'lucide-react'
 
 // import { getMenus } from '@/app/actions/menu' // Removed
@@ -18,8 +20,8 @@ import { Card, CardContent } from '@/components/ui/card'
 import prisma, { Prisma } from '@/lib/prisma' // Adjusted import
 
 export const menuWithRelations = {
-    plates: { include: { category: true } },
-    categories: true,
+    plates: { include: { categoryPlate: true } },
+    categoryPlates: true,
 } satisfies Prisma.MenuInclude
 
 export type MenuWithRelations =
@@ -35,10 +37,10 @@ async function getMenusData() {
             include: {
                 plates: {
                     include: {
-                        category: true,
+                        categoryPlate: true,
                     },
                 },
-                categories: true,
+                categoryPlates: true,
             },
         });
 
@@ -79,31 +81,12 @@ async function getMenusData() {
     }
 }
 
-
-export default async function AdminMenusPage() {
-
+async function MenusContent() {
     const { menus, stats } = await getMenusData()
     const { totalMenus, activeMenus, featuredMenus, todayMenus } = stats
 
     return (
         <div className="space-y-8">
-
-            {/* ═══════════════════ Header ═══════════════════ */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Menus</h1>
-                    <p className="text-muted-foreground mt-1">
-                        Gérer vos menus et leurs plats associés
-                    </p>
-                </div>
-                <Link href="/admin/menus/new">
-                    <Button size="lg" className="gap-2 shadow-lg shadow-primary/20">
-                        <Plus className="h-5 w-5" />
-                        Créer un menu
-                    </Button>
-                </Link>
-            </div>
-
             {/* ═══════════════════ Stats Overview ═══════════════════ */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 <Card className="border-0 shadow-md bg-linear-to-br from-background to-muted/30">
@@ -194,3 +177,39 @@ export default async function AdminMenusPage() {
     )
 }
 
+function LoadingState() {
+    return (
+        <div className="flex h-[400px] w-full items-center justify-center rounded-xl border border-dashed text-muted-foreground">
+            <div className="flex flex-col items-center gap-2">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                <p>Chargement des menus...</p>
+            </div>
+        </div>
+    )
+}
+
+export default function AdminMenusPage() {
+    return (
+        <div className="space-y-8">
+            {/* ═══════════════════ Header ═══════════════════ */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h1 className="text-3xl font-bold tracking-tight">Menus</h1>
+                    <p className="text-muted-foreground mt-1">
+                        Gérer vos menus et leurs plats associés
+                    </p>
+                </div>
+                <Link href="/admin/menus/new">
+                    <Button size="lg" className="gap-2 shadow-lg shadow-primary/20">
+                        <Plus className="h-5 w-5" />
+                        Créer un menu
+                    </Button>
+                </Link>
+            </div>
+
+            <Suspense fallback={<LoadingState />}>
+                <MenusContent />
+            </Suspense>
+        </div>
+    )
+}

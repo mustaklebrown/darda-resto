@@ -3,9 +3,9 @@ import Link from 'next/link'
 import ReservationCharts from '@/app/_components/admin/reservation-charts'
 import { format, subDays, startOfDay } from 'date-fns'
 import { fr } from 'date-fns/locale/fr'
-import { Utensils, Tag, Book, TrendingUp, LucideIcon } from 'lucide-react'
-import { headers } from 'next/headers'
+import { Utensils, Tag, Book, TrendingUp, LucideIcon, Loader2 } from 'lucide-react'
 import { cacheLife } from 'next/cache'
+import { Suspense } from 'react'
 
 // Cached stats counts
 async function getStatsCount() {
@@ -13,7 +13,7 @@ async function getStatsCount() {
     cacheLife("minutes")
     try {
         return await Promise.all([
-            prisma.category.count(),
+            prisma.categoryPlate.count(),
             prisma.plate.count(),
             prisma.reservation.count(),
         ])
@@ -89,9 +89,7 @@ async function getStatusDistribution() {
     }
 }
 
-export default async function AdminPage() {
-
-
+async function DashboardContent() {
     // Basic counts
     const [categoriesCount, platesCount, reservationsCount] = await getStatsCount()
 
@@ -102,23 +100,7 @@ export default async function AdminPage() {
     const statusData = await getStatusDistribution()
 
     return (
-        <div className="space-y-10 pb-10">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">
-                        Tableau de Bord Admin
-                    </h1>
-                    <p className="text-muted-foreground mt-1">
-                        Gérer le menu, les catégories et analyser les réservations.
-                    </p>
-                </div>
-                <div className="bg-primary/10 text-primary px-4 py-2 rounded-2xl flex items-center gap-2 text-sm font-medium">
-                    <TrendingUp className="w-4 h-4" />
-                    Vue d'ensemble
-                </div>
-            </div>
-
+        <div className="space-y-10">
             {/* Stats Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <DashboardCard
@@ -179,6 +161,43 @@ export default async function AdminPage() {
                     />
                 </div>
             </div>
+        </div>
+    )
+}
+
+function LoadingState() {
+    return (
+        <div className="flex h-[400px] w-full items-center justify-center rounded-xl border border-dashed text-muted-foreground">
+            <div className="flex flex-col items-center gap-2">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                <p>Chargement du tableau de bord...</p>
+            </div>
+        </div>
+    )
+}
+
+export default function AdminPage() {
+    return (
+        <div className="space-y-10 pb-10">
+            {/* Header */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h1 className="text-3xl font-bold tracking-tight">
+                        Tableau de Bord Admin
+                    </h1>
+                    <p className="text-muted-foreground mt-1">
+                        Gérer le menu, les catégories et analyser les réservations.
+                    </p>
+                </div>
+                <div className="bg-primary/10 text-primary px-4 py-2 rounded-2xl flex items-center gap-2 text-sm font-medium">
+                    <TrendingUp className="w-4 h-4" />
+                    Vue d&apos;ensemble
+                </div>
+            </div>
+
+            <Suspense fallback={<LoadingState />}>
+                <DashboardContent />
+            </Suspense>
         </div>
     )
 }

@@ -2,7 +2,6 @@
 
 import prisma from '@/lib/prisma';
 import { revalidatePath, revalidateTag } from 'next/cache';
-import { randomUUID } from 'crypto';
 
 type PlateData = {
   name: string;
@@ -16,6 +15,7 @@ type PlateData = {
 export async function deletePlate(id: string) {
   await prisma.plate.delete({ where: { id } });
   revalidatePath('/admin/plates');
+  revalidatePath('/menu');
   revalidateTag('plates', 'max');
   revalidateTag('menu-data', 'max');
 }
@@ -32,6 +32,7 @@ export async function createPlate(data: PlateData) {
     },
   });
   revalidatePath('/admin/plates');
+  revalidatePath('/menu');
   revalidateTag('plates', 'max');
   revalidateTag('menu-data', 'max');
 }
@@ -49,6 +50,7 @@ export async function updatePlate(id: string, data: Partial<PlateData>) {
     },
   });
   revalidatePath('/admin/plates');
+  revalidatePath('/menu');
   revalidateTag('plates', 'max');
   revalidateTag('menu-data', 'max');
 }

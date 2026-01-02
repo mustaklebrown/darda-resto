@@ -11,7 +11,7 @@ async function getMenuOptions() {
         prisma.plate.findMany({
             orderBy: { name: 'asc' },
         }),
-        prisma.category.findMany({
+        prisma.categoryPlate.findMany({
             orderBy: { name: 'asc' },
         })
     ])

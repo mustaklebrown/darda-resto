@@ -1,5 +1,6 @@
-import Footer from '../_components/Footer'
-import Navbar from '../_components/Navbar'
+import { Suspense } from 'react'
+import Footer from '../_components/layout/footer'
+import Navbar from '../_components/layout/navbar'
 
 export default function HomeLayout({
     children,
@@ -13,7 +14,9 @@ export default function HomeLayout({
 
             {/* Page background */}
             <div className="pt-28 backdrop-blur-xl bg-amber-200/20 dark:bg-amber-800/10">
-                {children}
+                <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Chargement...</div>}>
+                    {children}
+                </Suspense>
             </div>
             <Footer />
         </>

@@ -1,58 +1,78 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
-  output   = "./"
+}
+
+generator dev {
+  provider = "prisma-client-js"
+  output   = "../app/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
 }
 
-model Category {
+model CategoryPlate {
   id        String   @id @default(cuid())
   name      String
   slug      String   @unique
   image     String?
-  plates    Plate[]
-  menus     Menu[] // many-to-many
   createdAt DateTime @default(now())
+  plates    Plate[]
+  menus     Menu[]
 }
 
-model Plate {
-  id          String  @id @default(cuid())
-  name        String
-  description String
-  price       Float
-  image       String?
-  slug        String? @unique
-  isAvailable Boolean @default(true)
-
-  categoryId String
-  category   Category @relation(fields: [categoryId], references: [id])
-
-  menus     Menu[] // many-to-many
-  feedbacks Feedback[]
-
+model CategoryMenu {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  image     String?
   createdAt DateTime @default(now())
+  menus     Menu[]
 }
 
 model Feedback {
-  id      String  @id @default(cuid())
-  rating  Int // 1..5
-  comment String?
-
-  plateId String
-  plate   Plate  @relation(fields: [plateId], references: [id], onDelete: Cascade)
-
+  id        String   @id @default(cuid())
+  rating    Int
+  comment   String?
+  plateId   String
   userName  String?
   userEmail String?
-
   createdAt DateTime @default(now())
+  plate     Plate    @relation(fields: [plateId], references: [id], onDelete: Cascade)
+}
+
+model Menu {
+  id             String          @id @default(cuid())
+  name           String
+  slug           String          @unique
+  description    String?
+  image          String?
+  type           MenuType        @default(REGULAR)
+  isFeatured     Boolean         @default(false)
+  isActive       Boolean         @default(true)
+  startTime      DateTime?
+  endTime        DateTime?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  categoryMenuId String?
+  categoryMenu   CategoryMenu?   @relation(fields: [categoryMenuId], references: [id])
+  categoryPlates CategoryPlate[]
+  plates         Plate[]
+}
+
+model Plate {
+  id            String        @id @default(cuid())
+  name          String
+  description   String
+  price         Float
+  image         String?
+  categoryId    String
+  createdAt     DateTime      @default(now())
+  isAvailable   Boolean       @default(true)
+  slug          String?       @unique
+  feedback      Feedback[]
+  categoryPlate CategoryPlate @relation(fields: [categoryId], references: [id])
+  menus         Menu[]
 }
 
 model Reservation {
@@ -67,10 +87,65 @@ model Reservation {
   createdAt DateTime          @default(now())
 }
 
-enum ReservationStatus {
-  PENDING
-  CONFIRMED
-  CANCELLED
+model account {
+  id                    String    @id @default(cuid())
+  accountId             String
+  providerId            String
+  userId                String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  user                  user      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model session {
+  id             String   @id @default(cuid())
+  expiresAt      DateTime
+  token          String   @unique
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  ipAddress      String?
+  userAgent      String?
+  userId         String
+  impersonatedBy String?
+  user           user     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model user {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  role          String    @default("user")
+  banned        Boolean   @default(false)
+  banReason     String?
+  banExpires    DateTime?
+  account       account[]
+  session       session[]
+}
+
+model verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
 }
 
 enum MenuType {
@@ -80,98 +155,8 @@ enum MenuType {
   REGULAR
 }
 
-model Menu {
-  id          String  @id @default(cuid())
-  name        String
-  slug        String  @unique
-  description String?
-  image       String?
-
-  type MenuType @default(REGULAR)
-
-  isFeatured Boolean @default(false)
-  isActive   Boolean @default(true)
-
-  startTime DateTime?
-  endTime   DateTime?
-
-  plates     Plate[] // many-to-many
-  categories Category[] // many-to-many
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model User {
-  id            String  @id @default(cuid())
-  name          String
-  email         String  @unique
-  emailVerified Boolean @default(false)
-  image         String?
-
-  role       String    @default("user")
-  banned     Boolean   @default(false)
-  banReason  String?
-  banExpires DateTime?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  sessions Session[]
-  accounts Account[]
-
-  @@map("user")
-}
-
-model Session {
-  id        String   @id @default(cuid())
-  expiresAt DateTime
-  token     String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  ipAddress String?
-  userAgent String?
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  impersonatedBy String?
-
-  @@index([userId])
-  @@map("session")
-}
-
-model Account {
-  id         String @id @default(cuid())
-  accountId  String
-  providerId String
-  userId     String
-  user       User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  accessToken           String?
-  refreshToken          String?
-  idToken               String?
-  accessTokenExpiresAt  DateTime?
-  refreshTokenExpiresAt DateTime?
-  scope                 String?
-  password              String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([userId])
-  @@map("account")
-}
-
-model Verification {
-  id         String   @id @default(cuid())
-  identifier String
-  value      String
-  expiresAt  DateTime
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([identifier])
-  @@map("verification")
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
 }

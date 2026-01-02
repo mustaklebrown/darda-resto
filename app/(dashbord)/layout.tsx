@@ -1,47 +1,53 @@
 'use client'
 
-import { useState, Suspense, useEffect } from 'react'
+import React, { useState, Suspense } from 'react'
 import Link from 'next/link'
-// import { usePathname } from 'next/navigation' 
+import { usePathname } from 'next/navigation'
 import {
     LayoutDashboard,
-    Tag,
-    Utensils,
+    BookOpen,
+    UtensilsCrossed,
+    Tags,
+    CalendarDays,
     Settings,
-    Book,
-    CookingPot,
     Menu,
-    X,
-    ChefHat,
 } from 'lucide-react'
-
-import Navbar from '../_components/Navbar'
-import { LogoutButton } from '../_components/logout-button'
-import { Button } from '@/components/ui/button'
-import {
-    Sheet,
-    SheetContent,
-    SheetHeader,
-    SheetTitle,
-    SheetTrigger,
-} from '@/components/ui/sheet'
 import { cn } from '@/lib/utils'
+import { LogoutButton } from '@/app/_components/auth/logout-button'
+import Navbar from '@/app/_components/layout/navbar'
+import { Button } from '@/components/ui/button'
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 
 const sidebarItems = [
-    { label: 'Tableau de bord', href: '/admin', icon: LayoutDashboard },
-    { label: 'Catégories', href: '/admin/categories', icon: Tag },
-    { label: 'Plats', href: '/admin/plates', icon: Utensils },
-    { label: 'Réservations', href: '/admin/reservations', icon: Book },
-    { label: 'Menus', href: '/admin/menus', icon: CookingPot },
+    {
+        label: 'Tableau de bord',
+        href: '/admin',
+        icon: LayoutDashboard
+    },
+    {
+        label: 'Menus',
+        href: '/admin/menus',
+        icon: BookOpen
+    },
+    {
+        label: 'Plats',
+        href: '/admin/plates',
+        icon: UtensilsCrossed
+    },
+    {
+        label: 'Catégories',
+        href: '/admin/categories',
+        icon: Tags
+    },
+    {
+        label: 'Réservations',
+        href: '/admin/reservations',
+        icon: CalendarDays
+    },
 ]
 
 function SidebarContent({ onLinkClick }: { onLinkClick?: () => void }) {
-    // Avoid usePathname() during prerender to prevent "Uncached data" build errors in Next.js 16.1
-    const [pathname, setPathname] = useState("")
-
-    useEffect(() => {
-        setPathname(window.location.pathname)
-    }, [])
+    const pathname = usePathname()
 
     return (
         <>
@@ -117,7 +123,7 @@ export default function AdminLayout({
                 <div className="flex items-center justify-between max-w-7xl mx-auto">
                     <div className="flex items-center gap-3">
                         <div className="p-2 rounded-lg bg-primary/10">
-                            <ChefHat className="h-5 w-5 text-primary" />
+                            <LayoutDashboard className="h-5 w-5 text-primary" />
                         </div>
                         <span className="font-semibold">Admin Panel</span>
                     </div>
@@ -134,7 +140,7 @@ export default function AdminLayout({
                             <SheetHeader className="p-6 pb-0">
                                 <SheetTitle className="flex items-center gap-3">
                                     <div className="p-2 rounded-lg bg-primary/10">
-                                        <ChefHat className="h-5 w-5 text-primary" />
+                                        <LayoutDashboard className="h-5 w-5 text-primary" />
                                     </div>
                                     Darda Resto
                                 </SheetTitle>

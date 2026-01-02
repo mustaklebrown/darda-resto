@@ -1,6 +1,6 @@
 'use client'
 
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTransition, useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -38,7 +38,7 @@ import {
 } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
 import Link from 'next/link'
-import { Plate, Category, Menu, Prisma } from '@/app/generated/prisma'
+import { Plate, CategoryPlate, Menu } from '@/app/generated/prisma'
 
 /* ─────────────────────────────────────────────────────────── */
 
@@ -58,13 +58,13 @@ type MenuInput = z.infer<typeof menuSchema>
 
 type MenuWithRelations = Menu & {
     plates: Plate[]
-    categories: Category[]
+    categoryPlates: CategoryPlate[]
 }
 
 interface MenuFormProps {
     menu: MenuWithRelations
     plates: Plate[]
-    categories: Category[]
+    categories: CategoryPlate[]
 }
 
 export default function MenuForm({ menu, plates, categories }: MenuFormProps) {
@@ -86,12 +86,12 @@ export default function MenuForm({ menu, plates, categories }: MenuFormProps) {
                 ? new Date(menu.endTime).toISOString().slice(0, 16)
                 : '',
             plates: menu?.plates?.map((p) => p.id) ?? [],
-            categories: menu?.categories?.map((c) => c.id) ?? [],
+            categories: menu?.categoryPlates?.map((c) => c.id) ?? [],
         },
     })
 
-    const watchedPlates = form.watch('plates') ?? []
-    const watchedCategories = form.watch('categories') ?? []
+    const watchedPlates = useWatch({ control: form.control, name: 'plates' }) ?? []
+    const watchedCategories = useWatch({ control: form.control, name: 'categories' }) ?? []
 
     const selectedPlates = plates.filter((p) => watchedPlates.includes(p.id))
     const selectedCategories = categories.filter((c) => watchedCategories.includes(c.id))

@@ -14,7 +14,7 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 
-import { deleteCategory, updateCategory } from './action/actions'
+import { deleteCategory, updateCategory, deleteMenuCategory, updateMenuCategory } from './action/actions'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -49,6 +49,7 @@ import {
 import { UploadButton } from '@/lib/uploadthing'
 
 type Props = {
+    type: 'PLATE' | 'MENU'
     category: {
         id: string
         name: string
@@ -57,7 +58,7 @@ type Props = {
     }
 }
 
-export function CategoryTile({ category }: Props) {
+export function CategoryTile({ category, type }: Props) {
     const [isPending, startTransition] = useTransition()
     const [editOpen, setEditOpen] = useState(false)
     const [deleteOpen, setDeleteOpen] = useState(false)
@@ -69,14 +70,18 @@ export function CategoryTile({ category }: Props) {
     const handleDelete = () => {
         startTransition(async () => {
             try {
-                await deleteCategory(category.id)
-                toast.success('Category deleted', {
-                    description: `"${category.name}" has been removed.`,
+                if (type === 'PLATE') {
+                    await deleteCategory(category.id)
+                } else {
+                    await deleteMenuCategory(category.id)
+                }
+                toast.success('Catégorie supprimée', {
+                    description: `"${category.name}" a été retirée.`,
                 })
                 setDeleteOpen(false)
             } catch {
-                toast.error('Failed to delete', {
-                    description: 'Please try again later.',
+                toast.error('Échec de la suppression', {
+                    description: 'Veuillez réessayer plus tard.',
                 })
             }
         })
@@ -84,23 +89,30 @@ export function CategoryTile({ category }: Props) {
 
     const handleUpdate = () => {
         if (!editName.trim()) {
-            toast.error('Name is required')
+            toast.error('Le nom est requis')
             return
         }
 
         startTransition(async () => {
             try {
-                await updateCategory(category.id, {
-                    name: editName,
-                    image: editImage || undefined,
-                })
-                toast.success('Category updated', {
-                    description: `"${editName}" has been saved.`,
+                if (type === 'PLATE') {
+                    await updateCategory(category.id, {
+                        name: editName,
+                        image: editImage || undefined,
+                    })
+                } else {
+                    await updateMenuCategory(category.id, {
+                        name: editName,
+                        image: editImage || undefined,
+                    })
+                }
+                toast.success('Catégorie mise à jour', {
+                    description: `"${editName}" a été enregistrée.`,
                 })
                 setEditOpen(false)
             } catch {
-                toast.error('Failed to update', {
-                    description: 'Please try again later.',
+                toast.error('Échec de la mise à jour', {
+                    description: 'Veuillez réessayer plus tard.',
                 })
             }
         })
@@ -302,7 +314,7 @@ export function CategoryTile({ category }: Props) {
                             Delete Category?
                         </AlertDialogTitle>
                         <AlertDialogDescription>
-                            Are you sure you want to delete <strong>"{category.name}"</strong>?
+                            Are you sure you want to delete <strong>&quot;{category.name}&quot;</strong>?
                             This action cannot be undone and will remove all associations.
                         </AlertDialogDescription>
                     </AlertDialogHeader>

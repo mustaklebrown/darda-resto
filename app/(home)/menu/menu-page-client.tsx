@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams, useRouter } from 'next/navigation';
-import MenuFilters from '@/app/_components/menu-filters';
-import PlatesGrid from '@/app/_components/plates-grid';
+import MenuFilters from '@/app/_components/menu/menu-filters';
+import PlatesGrid from '@/app/_components/menu/plates-grid';
 
 interface Plate {
     id: string;
@@ -30,17 +30,10 @@ interface MenuPageClientProps {
 export default function MenuPageClient({ categories, allPlates }: MenuPageClientProps) {
     const searchParams = useSearchParams();
     const router = useRouter();
-    const [activeCategory, setActiveCategory] = useState('all');
 
-    // Sync state with URL search params
-    useEffect(() => {
-        const categoryParam = searchParams.get('category');
-        if (categoryParam) {
-            setActiveCategory(categoryParam);
-        } else {
-            setActiveCategory('all');
-        }
-    }, [searchParams]);
+    // Initialize state directly from searchParams to avoid setState in useEffect
+    const categoryParam = searchParams.get('category');
+    const [activeCategory, setActiveCategory] = useState(categoryParam || 'all');
 
     // Handle filter change
     const handleCategoryChange = (slug: string) => {

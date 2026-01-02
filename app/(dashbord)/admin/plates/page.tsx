@@ -1,11 +1,13 @@
 import Link from 'next/link'
 import prisma from '@/lib/prisma'
+import { Suspense } from 'react'
 import {
     Plus,
     UtensilsCrossed,
     Tag,
     TrendingUp,
     DollarSign,
+    Loader2
 } from 'lucide-react'
 
 import { PlateTile } from './plate-tile'
@@ -13,7 +15,7 @@ import { PlateTile } from './plate-tile'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 
-import { headers } from 'next/headers'
+
 import { cacheLife } from 'next/cache'
 
 async function getPlates() {
@@ -21,7 +23,7 @@ async function getPlates() {
     cacheLife("minutes")
     try {
         return await prisma.plate.findMany({
-            include: { category: true },
+            include: { categoryPlate: true },
             orderBy: { createdAt: 'desc' },
         })
     } catch (error) {
@@ -30,13 +32,12 @@ async function getPlates() {
     }
 }
 
-export default async function PlatesPage() {
-
+async function PlatesContent() {
     const plates = await getPlates()
 
     // Calculate stats
     const totalPlates = plates.length
-    const totalCategories = new Set(plates.filter(p => p.category).map(p => p.category!.id)).size
+    const totalCategories = new Set(plates.filter(p => p.categoryPlate).map(p => p.categoryPlate!.id)).size
     const avgPrice = plates.length > 0
         ? plates.reduce((sum, p) => sum + (p.price || 0), 0) / plates.length
         : 0
@@ -46,23 +47,6 @@ export default async function PlatesPage() {
 
     return (
         <div className="space-y-8">
-
-            {/* ═══════════════════ Header ═══════════════════ */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Plats</h1>
-                    <p className="text-muted-foreground mt-1">
-                        Gérer les plats affichés dans le menu
-                    </p>
-                </div>
-                <Link href="/admin/plates/new">
-                    <Button size="lg" className="gap-2 shadow-lg shadow-primary/20">
-                        <Plus className="h-5 w-5" />
-                        Ajouter un plat
-                    </Button>
-                </Link>
-            </div>
-
             {/* ═══════════════════ Stats Overview ═══════════════════ */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 <Card className="border-0 shadow-md bg-linear-to-br from-background to-muted/30">
@@ -153,3 +137,40 @@ export default async function PlatesPage() {
     )
 }
 
+function LoadingState() {
+    return (
+        <div className="flex h-[400px] w-full items-center justify-center rounded-xl border border-dashed text-muted-foreground">
+            <div className="flex flex-col items-center gap-2">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                <p>Chargement des plats...</p>
+            </div>
+        </div>
+    )
+}
+
+export default function PlatesPage() {
+    return (
+        <div className="space-y-8">
+
+            {/* ═══════════════════ Header ═══════════════════ */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h1 className="text-3xl font-bold tracking-tight">Plats</h1>
+                    <p className="text-muted-foreground mt-1">
+                        Gérer les plats affichés dans le menu
+                    </p>
+                </div>
+                <Link href="/admin/plates/new">
+                    <Button size="lg" className="gap-2 shadow-lg shadow-primary/20">
+                        <Plus className="h-5 w-5" />
+                        Ajouter un plat
+                    </Button>
+                </Link>
+            </div>
+
+            <Suspense fallback={<LoadingState />}>
+                <PlatesContent />
+            </Suspense>
+        </div>
+    )
+}

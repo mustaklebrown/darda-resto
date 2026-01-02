@@ -23,7 +23,7 @@ async function getMenuData() {
     cacheLife("minutes")
 
     try {
-        return await prisma?.category.findMany({
+        return await prisma?.categoryPlate.findMany({
             include: {
                 plates: {
                     orderBy: { createdAt: 'desc' }

@@ -11,13 +11,23 @@ datasource db {
   provider = "postgresql"
 }
 
-model Category {
+
+model CategoryPlate {
   id        String   @id @default(cuid())
   name      String
   slug      String   @unique
   image     String?
   createdAt DateTime @default(now())
   plates    Plate[]
+  menus     Menu[]
+}
+
+model CategoryMenu {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  image     String?
+  createdAt DateTime @default(now())
   menus     Menu[]
 }
 
@@ -33,35 +43,37 @@ model Feedback {
 }
 
 model Menu {
-  id          String     @id @default(cuid())
-  name        String
-  slug        String     @unique
-  description String?
-  image       String?
-  type        MenuType   @default(REGULAR)
-  isFeatured  Boolean    @default(false)
-  isActive    Boolean    @default(true)
-  startTime   DateTime?
-  endTime     DateTime?
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  categories  Category[]
-  plates      Plate[]
+  id             String         @id @default(cuid())
+  name           String
+  slug           String         @unique
+  description    String?
+  image          String?
+  type           MenuType       @default(REGULAR)
+  isFeatured     Boolean        @default(false)
+  isActive       Boolean        @default(true)
+  startTime      DateTime?
+  endTime        DateTime?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  categoryMenuId String?
+  categoryMenu   CategoryMenu?  @relation(fields: [categoryMenuId], references: [id])
+  categoryPlates CategoryPlate[]
+  plates         Plate[]
 }
 
 model Plate {
-  id          String     @id @default(cuid())
-  name        String
-  description String
-  price       Float
-  image       String?
-  categoryId  String
-  createdAt   DateTime   @default(now())
-  isAvailable Boolean    @default(true)
-  slug        String?    @unique
-  feedback    Feedback[]
-  category    Category   @relation(fields: [categoryId], references: [id])
-  menus       Menu[]
+  id            String        @id @default(cuid())
+  name          String
+  description   String
+  price         Float
+  image         String?
+  categoryId    String
+  createdAt     DateTime      @default(now())
+  isAvailable   Boolean       @default(true)
+  slug          String?       @unique
+  feedback      Feedback[]
+  categoryPlate CategoryPlate @relation(fields: [categoryId], references: [id])
+  menus         Menu[]
 }
 
 model Reservation {

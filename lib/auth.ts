@@ -12,6 +12,10 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
+  pages: {
+    signIn: '/login',
+    signUp: '/signup',
+  },
   // Ajouter le plugin admin pour les rôles et permissions
   plugins: [
     nextCookies(),

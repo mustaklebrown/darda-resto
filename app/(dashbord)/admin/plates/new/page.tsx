@@ -2,14 +2,14 @@ import prisma from '@/lib/prisma'
 import { Suspense } from 'react'
 import { createPlate } from '../actions'
 import { redirect } from 'next/navigation'
-import { PlateForm } from '@/app/_components/plate-form'
+import { PlateForm } from '@/app/_components/admin/plate-form'
 import { cacheLife } from 'next/cache'
 
 async function getCategories() {
     "use cache"
     cacheLife("minutes")
     try {
-        return await prisma.category.findMany()
+        return await prisma.categoryPlate.findMany()
     } catch (error) {
         console.error("Error fetching categories:", error)
         return []

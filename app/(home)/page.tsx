@@ -1,14 +1,14 @@
 import { isWithinInterval } from 'date-fns'
 import { cacheLife, cacheTag } from 'next/cache'
 
-import Hero from "../_components/Hero";
-import MenuCategories from "../_components/menu-categories";
-import SignatureDishes from "../_components/signature-dishes";
-import ChefSection from "../_components/chef-section";
-import ReservationCTA from "../_components/reservation-cta";
-import Testimonal from "../_components/Testimonal";
-import OpenHours from "../_components/OpenHours";
-import TodayMenuSection from "../_components/today-menu";
+import Hero from "../_components/sections/hero";
+import MenuCategories from "../_components/sections/menu-categories";
+import SignatureDishes from "../_components/sections/signature-dishes";
+import ChefSection from "../_components/sections/chef-section";
+import ReservationCTA from "../_components/sections/reservation-cta";
+import Testimonal from "../_components/sections/testimonial";
+import OpenHours from "../_components/sections/open-hours";
+import TodayMenuSection from "../_components/sections/today-menu";
 import prisma from "@/lib/prisma";
 import type { Metadata } from 'next';
 
@@ -29,7 +29,7 @@ async function getCategories() {
     cacheLife("hours")
 
     try {
-        return await prisma.category.findMany({
+        return await prisma.categoryPlate.findMany({
             include: {
                 _count: {
                     select: { plates: true }
@@ -56,10 +56,10 @@ async function getActiveMenus() {
             include: {
                 plates: {
                     include: {
-                        category: true
+                        categoryPlate: true
                     }
                 },
-                categories: true,
+                categoryPlates: true,
             },
             orderBy: {
                 createdAt: 'desc'
@@ -102,7 +102,12 @@ async function getDisplayMenus() {
     return { todayMenu, featuredMenu }
 }
 
+import { headers } from 'next/headers'
+
 export default async function Page() {
+    // Access headers to opt-into dynamic rendering since we use new Date() in getDisplayMenus
+    await headers()
+
     // Fetch categories with plate count using cache
     const categories = await getCategories()
 

@@ -20,7 +20,7 @@ export async function updateMenuAction(menuId: string, data: any) {
         plates: {
           set: data.plates.map((id: string) => ({ id })),
         },
-        categories: {
+        categoryPlates: {
           set: data.categories.map((id: string) => ({ id })),
         },
       },
@@ -79,10 +79,10 @@ export async function getMenus() {
     include: {
       plates: {
         include: {
-          category: true,
+          categoryPlate: true,
         },
       },
-      categories: true, // if menu ↔ categories exists
+      categoryPlates: true, // if menu ↔ categories exists
     },
   });
 }
@@ -118,7 +118,7 @@ export async function createMenuAction(values: unknown): Promise<ActionResult> {
           connect: (plates ?? []).map((id) => ({ id })),
         },
 
-        categories: {
+        categoryPlates: {
           connect: (categories ?? []).map((id) => ({ id })),
         },
       },
