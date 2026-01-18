@@ -1,8 +1,9 @@
 'use client'
 
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { motion, AnimatePresence } from 'framer-motion'
+import Image from 'next/image'
+import { Button, buttonVariants } from '@/components/ui/button'
+import { motion } from 'framer-motion'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Menu, X, ArrowRight, Heart, ShoppingCart } from 'lucide-react'
 import { useState, useEffect } from 'react'
@@ -17,6 +18,18 @@ import { useWishlistStore } from '@/lib/store/wishlist'
 import { WishlistSheet } from './wishlist-sheet'
 import { CartSheet } from './cart-sheet'
 import { useCartStore } from '@/lib/store/cart'
+import { useSession, signOut } from '@/lib/auth-client'
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+    DropdownMenuGroup,
+} from "@/components/ui/dropdown-menu"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { LogOut, Settings, User as UserIcon, Shield } from "lucide-react"
 
 const navItems = [
     { label: 'Accueil', href: '/' },
@@ -27,6 +40,7 @@ const navItems = [
 ]
 
 export default function Navbar() {
+    const { data: session } = useSession()
     const [isOpen, setIsOpen] = useState(false)
     const [wishlistOpen, setWishlistOpen] = useState(false)
     const items = useWishlistStore((state) => state.items)
@@ -49,9 +63,12 @@ export default function Navbar() {
                 <nav className="glass rounded-2xl px-4 md:px-6 py-3 md:py-4 shadow-lg dark:shadow-black/40 border border-white/10">
                     <div className="flex items-center justify-between">
                         {/* Logo */}
-                        <Link href="/" className="text-lg md:text-xl font-bold tracking-tight group">
-                            <span className="text-primary group-hover:text-primary/80 transition-colors">Maison</span>{' '}
-                            <span className="text-foreground">Comores</span>
+                        <Link href="/" className="flex items-center gap-2 text-lg md:text-xl font-bold tracking-tight group ">
+                            <Image src="/favicon.ico" alt="Logo" width={32} height={32} className="w-8 h-8 rounded-full" />
+                            <span>
+                                <span className="text-primary group-hover:text-primary/80 transition-colors">Maison</span>{' '}
+                                <span className="text-foreground">Comores</span>
+                            </span>
                         </Link>
 
                         {/* Desktop Navigation */}
@@ -101,10 +118,72 @@ export default function Navbar() {
 
                             <ThemeToggle />
 
+                            {/* Auth Buttons */}
+                            <div className="hidden md:flex items-center gap-2">
+                                {session ? (
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger className={buttonVariants({ variant: "ghost", className: "relative h-10 w-10 rounded-full" })}>
+                                            <Avatar className="h-10 w-10 border border-border/50">
+                                                <AvatarImage src={session.user?.image || ''} alt={session.user?.name || ''} />
+                                                <AvatarFallback>{session.user?.name?.charAt(0).toUpperCase()}</AvatarFallback>
+                                            </Avatar>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent className="w-56" align="end">
+                                            <DropdownMenuGroup>
+                                                <DropdownMenuLabel className="font-normal">
+                                                    <div className="flex flex-col space-y-1">
+                                                        <p className="text-sm font-medium leading-none">{session.user?.name}</p>
+                                                        <p className="text-xs leading-none text-muted-foreground">
+                                                            {session.user?.email}
+                                                        </p>
+                                                    </div>
+                                                </DropdownMenuLabel>
+                                            </DropdownMenuGroup>
+                                            <DropdownMenuSeparator />
+                                            {/* @ts-ignore */}
+                                            {session.user?.role === 'admin' && (
+                                                <>
+                                                    <DropdownMenuItem className="">
+                                                        <Link href="/admin" className="cursor-pointer flex items-center gap-2">
+                                                            <Shield className="mr-2 h-4 w-4" />
+                                                            <span>Administration</span>
+                                                        </Link>
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuItem>
+                                                        <Link href="/admin/settings" className="cursor-pointer flex items-center gap-2">
+                                                            <Settings className="mr-2 h-4 w-4" />
+                                                            <span>Paramètres</span>
+                                                        </Link>
+                                                    </DropdownMenuItem>
+                                                </>
+                                            )}
+                                            <DropdownMenuSeparator />
+                                            <DropdownMenuItem onClick={() => signOut()} className="cursor-pointer text-destructive focus:text-destructive">
+                                                <LogOut className="mr-2 h-4 w-4" />
+                                                <span>Déconnexion</span>
+                                            </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                ) : (
+                                    <>
+                                        <Link href="/login">
+                                            <Button variant="ghost" className="rounded-xl hover:bg-primary/10 hover:text-primary">
+                                                Connexion
+                                            </Button>
+                                        </Link>
+                                        <Link href="/signup">
+                                            <Button className="rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm">
+                                                S'inscrire
+                                            </Button>
+                                        </Link>
+                                    </>
+                                )}
+                            </div>
+
                             {/* Desktop Reserve Button */}
                             <Link href="/reservation">
                                 <Button
-                                    className="hidden md:flex rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all active:scale-95"
+                                    className="hidden lg:flex rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all active:scale-95"
                                 >
                                     Réserver
                                 </Button>
@@ -123,8 +202,11 @@ export default function Navbar() {
                                     <SheetContent side="right" className="w-[300px] sm:w-[400px] p-0 border-none bg-background/95 backdrop-blur-xl">
                                         <SheetHeader className="p-6 border-b border-border/40">
                                             <SheetTitle className="flex items-center gap-2">
-                                                <span className="text-primary font-bold">Maison</span>
-                                                <span className="font-bold">Comores</span>
+                                                <Image src="/favicon.ico" alt="Logo" width={32} height={32} className="w-8 h-8" />
+                                                <div className="flex items-center gap-1">
+                                                    <span className="text-primary font-bold">Maison</span>
+                                                    <span className="font-bold">Comores</span>
+                                                </div>
                                             </SheetTitle>
                                         </SheetHeader>
 
@@ -147,6 +229,73 @@ export default function Navbar() {
                                                         </Link>
                                                     </motion.div>
                                                 ))}
+
+                                                {/* Mobile Auth Links */}
+                                                <div className="h-px bg-border/40 my-2" />
+
+                                                {session ? (
+                                                    <>
+                                                        <div className="flex items-center gap-4 py-2">
+                                                            <Avatar className="h-10 w-10 border border-border/50">
+                                                                <AvatarImage src={session.user?.image || ''} alt={session.user?.name || ''} />
+                                                                <AvatarFallback>{session.user?.name?.charAt(0).toUpperCase()}</AvatarFallback>
+                                                            </Avatar>
+                                                            <div className="flex flex-col">
+                                                                <span className="font-medium">{session.user?.name}</span>
+                                                                <span className="text-xs text-muted-foreground">{session.user?.email}</span>
+                                                            </div>
+                                                        </div>
+
+                                                        {/* @ts-ignore */}
+                                                        {session.user?.role === 'admin' && (
+                                                            <>
+                                                                <Link
+                                                                    href="/admin"
+                                                                    onClick={() => setIsOpen(false)}
+                                                                    className="text-lg font-medium hover:text-primary transition-colors flex items-center gap-2"
+                                                                >
+                                                                    <Shield className="h-5 w-5" />
+                                                                    Administration
+                                                                </Link>
+                                                                <Link
+                                                                    href="/admin/settings"
+                                                                    onClick={() => setIsOpen(false)}
+                                                                    className="text-lg font-medium hover:text-primary transition-colors flex items-center gap-2"
+                                                                >
+                                                                    <Settings className="h-5 w-5" />
+                                                                    Paramètres
+                                                                </Link>
+                                                            </>
+                                                        )}
+                                                        <button
+                                                            onClick={() => {
+                                                                signOut()
+                                                                setIsOpen(false)
+                                                            }}
+                                                            className="text-lg font-medium text-left hover:text-destructive transition-colors flex items-center gap-2"
+                                                        >
+                                                            <LogOut className="h-5 w-5" />
+                                                            Déconnexion
+                                                        </button>
+                                                    </>
+                                                ) : (
+                                                    <div className="flex flex-col gap-4">
+                                                        <Link
+                                                            href="/login"
+                                                            onClick={() => setIsOpen(false)}
+                                                            className="text-lg font-medium hover:text-primary transition-colors"
+                                                        >
+                                                            Se connecter
+                                                        </Link>
+                                                        <Link
+                                                            href="/signup"
+                                                            onClick={() => setIsOpen(false)}
+                                                            className="text-lg font-medium hover:text-primary transition-colors"
+                                                        >
+                                                            S'inscrire
+                                                        </Link>
+                                                    </div>
+                                                )}
                                             </div>
 
                                             <div className="mt-8 pt-8 border-t border-border/40 flex flex-col gap-4">
