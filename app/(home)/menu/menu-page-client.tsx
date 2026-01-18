@@ -13,6 +13,7 @@ interface Plate {
     price: number;
     image: string | null;
     categorySlug?: string;
+    categoryId: string;
 }
 
 interface Category {

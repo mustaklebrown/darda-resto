@@ -14,7 +14,12 @@ import {
     Loader2,
     Check,
     AlertCircle,
+    X,
+    BookOpen,
+    Image as ImageIcon,
 } from 'lucide-react'
+import Image from 'next/image'
+import { UploadImage } from '@/components/upload-image'
 import { toast } from 'sonner'
 
 import { menuSchema, MenuInput } from '@/lib/validators/menu'
@@ -55,6 +60,7 @@ export default function CreateMenuForm({ plates, categories }: any) {
             endTime: '',
             plates: [],
             categories: [],
+            image: '',
         },
     })
 
@@ -146,6 +152,44 @@ export default function CreateMenuForm({ plates, categories }: any) {
                                 className="min-h-[100px] resize-none"
                                 {...form.register('description')}
                             />
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label className="text-sm font-medium">Menu Image</Label>
+                            <div className="flex flex-col gap-4">
+                                {form.watch('image') ? (
+                                    <div className="relative aspect-video w-full overflow-hidden rounded-xl border bg-muted">
+                                        <Image
+                                            src={form.watch('image')!}
+                                            alt="Menu preview"
+                                            fill
+                                            className="object-cover"
+                                        />
+                                        <Button
+                                            type="button"
+                                            variant="destructive"
+                                            size="icon"
+                                            className="absolute right-2 top-2 h-8 w-8 rounded-full shadow-sm"
+                                            onClick={() => form.setValue('image', '')}
+                                        >
+                                            <X className="h-4 w-4" />
+                                        </Button>
+                                    </div>
+                                ) : (
+                                    <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed p-8 text-center bg-muted/20">
+                                        <div className="rounded-full bg-muted p-3">
+                                            <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <p className="text-sm font-medium">Upload a cover image</p>
+                                            <p className="text-xs text-muted-foreground">
+                                                Recommended: 16:9 aspect ratio
+                                            </p>
+                                        </div>
+                                        <UploadImage onUploaded={(url) => form.setValue('image', url)} />
+                                    </div>
+                                )}
+                            </div>
                         </div>
 
                         {/* Featured toggle */}
@@ -383,34 +427,48 @@ export default function CreateMenuForm({ plates, categories }: any) {
 
             {/* ══════════════════ Preview Dialog ══════════════════ */}
             <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
-                <DialogContent className="max-w-lg">
-                    <DialogHeader>
-                        <DialogTitle className="flex items-center gap-2">
-                            <Eye className="h-5 w-5 text-primary" />
-                            Menu Preview
-                        </DialogTitle>
-                    </DialogHeader>
+                <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto p-0 gap-0 rounded-3xl border-none outline-none">
+                    {/* Hero Image Section */}
+                    <div className="relative h-48 sm:h-64 w-full bg-muted">
+                        {form.watch('image') ? (
+                            <Image
+                                src={form.watch('image')!}
+                                alt="Menu preview"
+                                fill
+                                className="object-cover"
+                            />
+                        ) : (
+                            <div className="w-full h-full flex items-center justify-center bg-primary/10">
+                                <BookOpen className="w-12 h-12 text-primary/20" />
+                            </div>
+                        )}
+                        {/* Gradient Overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
 
-                    <div className="space-y-6 py-4">
-                        {/* Name & featured badge */}
-                        <div className="flex items-start justify-between gap-4">
-                            <h2 className="text-2xl font-bold">
-                                {form.watch('name') || 'Untitled Menu'}
-                            </h2>
-                            {form.watch('isFeatured') && (
-                                <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white gap-1">
-                                    <Sparkles className="h-3 w-3" />
-                                    Featured
-                                </Badge>
+                        {/* Content over Image */}
+                        <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                            <div className="flex items-start justify-between gap-4">
+                                <DialogTitle className="text-2xl font-bold text-white shadow-sm">
+                                    {form.watch('name') || 'Untitled Menu'}
+                                </DialogTitle>
+                                {form.watch('isFeatured') && (
+                                    <Badge className="bg-amber-500 hover:bg-amber-600 text-white border-none shadow-lg shrink-0">
+                                        Populaire
+                                    </Badge>
+                                )}
+                            </div>
+                            {form.watch('description') && (
+                                <p className="mt-2 text-white/90 text-sm font-light line-clamp-2">
+                                    {form.watch('description')}
+                                </p>
                             )}
                         </div>
+                    </div>
 
-                        {/* Description */}
-                        {form.watch('description') && (
-                            <p className="text-muted-foreground leading-relaxed">
-                                {form.watch('description')}
-                            </p>
-                        )}
+                    <div className="p-6 space-y-6 bg-background">
+                        {/* Time range */}
+
+
 
                         {/* Time range */}
                         {(form.watch('startTime') || form.watch('endTime')) && (
@@ -469,7 +527,7 @@ export default function CreateMenuForm({ plates, categories }: any) {
                         )}
 
                         {selectedPlates.length === 0 && selectedCategories.length === 0 && (
-                            <p className="text-center text-muted-foreground py-4">
+                            <p className="text-center text-muted-foreground py-4 text-sm">
                                 No categories or plates selected yet.
                             </p>
                         )}

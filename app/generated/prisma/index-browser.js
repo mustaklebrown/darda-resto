@@ -152,6 +152,7 @@ exports.Prisma.MenuScalarFieldEnum = {
   slug: 'slug',
   description: 'description',
   image: 'image',
+  price: 'price',
   type: 'type',
   isFeatured: 'isFeatured',
   isActive: 'isActive',
@@ -237,6 +238,28 @@ exports.Prisma.VerificationScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.OrderScalarFieldEnum = {
+  id: 'id',
+  customerName: 'customerName',
+  customerEmail: 'customerEmail',
+  customerPhone: 'customerPhone',
+  address: 'address',
+  totalPrice: 'totalPrice',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.OrderItemScalarFieldEnum = {
+  id: 'id',
+  orderId: 'orderId',
+  plateId: 'plateId',
+  menuId: 'menuId',
+  name: 'name',
+  price: 'price',
+  quantity: 'quantity'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -264,6 +287,15 @@ exports.ReservationStatus = exports.$Enums.ReservationStatus = {
   CANCELLED: 'CANCELLED'
 };
 
+exports.OrderStatus = exports.$Enums.OrderStatus = {
+  PENDING: 'PENDING',
+  CONFIRMED: 'CONFIRMED',
+  PREPARING: 'PREPARING',
+  DELIVERING: 'DELIVERING',
+  DELIVERED: 'DELIVERED',
+  CANCELLED: 'CANCELLED'
+};
+
 exports.Prisma.ModelName = {
   CategoryPlate: 'CategoryPlate',
   CategoryMenu: 'CategoryMenu',
@@ -274,7 +306,9 @@ exports.Prisma.ModelName = {
   account: 'account',
   session: 'session',
   user: 'user',
-  verification: 'verification'
+  verification: 'verification',
+  Order: 'Order',
+  OrderItem: 'OrderItem'
 };
 
 /**

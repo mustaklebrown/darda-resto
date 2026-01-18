@@ -15,6 +15,7 @@ export async function updateMenuAction(menuId: string, data: any) {
         name: data.name,
         description: data.description,
         isFeatured: data.isFeatured,
+        image: data.image,
         startTime: data.startTime ? new Date(data.startTime) : null,
         endTime: data.endTime ? new Date(data.endTime) : null,
         plates: {
@@ -99,6 +100,7 @@ export async function createMenuAction(values: unknown): Promise<ActionResult> {
       name,
       description,
       isFeatured,
+      image,
       startTime,
       endTime,
       plates,
@@ -111,6 +113,7 @@ export async function createMenuAction(values: unknown): Promise<ActionResult> {
         slug: name.toLowerCase().replace(/\s+/g, '-'),
         description,
         isFeatured,
+        image,
         startTime: startTime ? new Date(startTime) : null,
         endTime: endTime ? new Date(endTime) : null,
 
@@ -132,4 +135,21 @@ export async function createMenuAction(values: unknown): Promise<ActionResult> {
     console.error(error);
     return { success: false, error: 'Failed to create menu' };
   }
+}
+
+export async function getPlates() {
+  return await prisma.plate.findMany({
+    orderBy: { createdAt: 'desc' },
+    include: {
+      categoryPlate: true,
+    },
+  });
+}
+
+export async function getPlateCategories() {
+  return await prisma.categoryPlate.findMany();
+}
+
+export async function getMenuCategories() {
+  return await prisma.categoryMenu.findMany();
 }

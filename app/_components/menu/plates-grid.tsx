@@ -11,7 +11,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
-    ShoppingCart,
     Heart,
     UtensilsCrossed,
     Clock,
@@ -21,7 +20,10 @@ import {
     ArrowRight,
     X,
     Sparkles,
+    ShoppingCart
 } from 'lucide-react';
+import { useWishlistStore } from '@/lib/store/wishlist';
+import { useCartStore } from '@/lib/store/cart';
 
 interface Plate {
     id: string;
@@ -30,6 +32,7 @@ interface Plate {
     price: number;
     image: string | null;
     categorySlug?: string;
+    categoryId: string;
     category?: {
         name: string;
     };
@@ -37,79 +40,106 @@ interface Plate {
 
 export default function PlatesGrid({ plates }: { plates: Plate[] }) {
     const [selectedPlate, setSelectedPlate] = useState<Plate | null>(null);
-    const [isLiked, setIsLiked] = useState(false);
+    const { toggleItem: toggleWishlist, hasItem: isWishlisted } = useWishlistStore()
+    const { addItem: addToCart } = useCartStore()
 
     return (
         <>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {plates.map((plate, index) => (
-                    <motion.div
-                        layout
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 20 }}
-                        transition={{ duration: 0.4, delay: index * 0.05 }}
-                        whileHover={{ y: -8 }}
-                        key={plate.id}
-                        onClick={() => setSelectedPlate(plate)}
-                        className="group cursor-pointer rounded-2xl overflow-hidden border border-border/30 bg-card/50 backdrop-blur-sm shadow-lg hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500"
-                    >
-                        {/* Image Container */}
-                        <div className="relative h-56 overflow-hidden">
-                            {plate.image ? (
-                                <Image
-                                    src={plate.image}
-                                    alt={plate.name}
-                                    fill
-                                    className="object-cover transition-transform duration-700 group-hover:scale-110"
-                                />
-                            ) : (
-                                <div className="absolute inset-0 bg-muted flex items-center justify-center">
-                                    <UtensilsCrossed className="w-12 h-12 text-muted-foreground/20" />
+                {plates.map((plate, index) => {
+                    const isLiked = isWishlisted(plate.id, 'plate')
+                    return (
+                        <motion.div
+                            layout
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 20 }}
+                            transition={{ duration: 0.4, delay: index * 0.05 }}
+                            whileHover={{ y: -8 }}
+                            key={plate.id}
+                            onClick={() => setSelectedPlate(plate)}
+                            className="group cursor-pointer rounded-2xl overflow-hidden border border-border/30 bg-card/50 backdrop-blur-sm shadow-lg hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500"
+                        >
+                            {/* Image Container */}
+                            <div className="relative h-56 overflow-hidden">
+                                {plate.image ? (
+                                    <Image
+                                        src={plate.image}
+                                        alt={plate.name}
+                                        fill
+                                        className="object-cover transition-transform duration-700 group-hover:scale-110"
+                                    />
+                                ) : (
+                                    <div className="absolute inset-0 bg-muted flex items-center justify-center">
+                                        <UtensilsCrossed className="w-12 h-12 text-muted-foreground/20" />
+                                    </div>
+                                )}
+                                <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                                {/* Price Tag */}
+                                <div className="absolute top-4 left-4">
+                                    <Badge className="bg-primary text-primary-foreground font-bold text-sm px-3 py-1.5 shadow-lg">
+                                        {plate.price.toFixed(2)} €
+                                    </Badge>
                                 </div>
-                            )}
-                            <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                            {/* Price Tag */}
-                            <div className="absolute top-4 left-4">
-                                <Badge className="bg-primary text-primary-foreground font-bold text-sm px-3 py-1.5 shadow-lg">
-                                    {plate.price.toFixed(2)} €
-                                </Badge>
-                            </div>
+                                {/* Actions Container */}
+                                <div className="absolute top-4 right-4 flex flex-col gap-2 z-10 transform translate-x-12 group-hover:translate-x-0 transition-transform duration-500">
+                                    {/* Favorite Button */}
+                                    <Button
+                                        size="icon"
+                                        variant="secondary"
+                                        className={`rounded-full shadow-lg backdrop-blur-md bg-white/20 border-white/20 hover:bg-white/40 h-10 w-10 ${isLiked ? 'text-red-500 hover:text-red-600' : 'text-white'}`}
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                            toggleWishlist('plate', plate)
+                                        }}
+                                    >
+                                        <Heart className={`w-4 h-4 ${isLiked ? 'fill-current' : ''}`} />
+                                    </Button>
 
-                            {/* Favorite Button */}
-                            <div className="absolute top-4 right-4 transform translate-x-12 group-hover:translate-x-0 transition-transform duration-500">
-                                <Button size="icon" variant="secondary" className="rounded-full shadow-lg backdrop-blur-md bg-white/20 border-white/20 text-white hover:bg-primary hover:text-white h-10 w-10">
-                                    <Heart className="w-4 h-4" />
-                                </Button>
-                            </div>
-                        </div>
-
-                        {/* Content */}
-                        <div className="p-5">
-                            <div className="flex items-start justify-between gap-3 mb-2">
-                                <h3 className="text-lg font-semibold tracking-tight group-hover:text-primary transition-colors line-clamp-1">
-                                    {plate.name}
-                                </h3>
-                            </div>
-
-                            <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed mb-4">
-                                {plate.description}
-                            </p>
-
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-1">
-                                    <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                                    <span className="text-sm font-medium">4.8</span>
+                                    {/* Add to Cart Button */}
+                                    <Button
+                                        size="icon"
+                                        variant="secondary"
+                                        className="rounded-full shadow-lg backdrop-blur-md bg-white/20 border-white/20 hover:bg-primary hover:text-white h-10 w-10 text-white"
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                            addToCart('plate', plate)
+                                            useCartStore.getState().setIsOpen(true)
+                                        }}
+                                    >
+                                        <ShoppingCart className="w-4 h-4" />
+                                    </Button>
                                 </div>
-                                <Button variant="ghost" size="sm" className="text-primary hover:text-primary hover:bg-primary/5 font-medium gap-1 group/btn">
-                                    Détails
-                                    <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-0.5" />
-                                </Button>
                             </div>
-                        </div>
-                    </motion.div>
-                ))}
+
+                            {/* Content */}
+                            <div className="p-5">
+                                <div className="flex items-start justify-between gap-3 mb-2">
+                                    <h3 className="text-lg font-semibold tracking-tight group-hover:text-primary transition-colors line-clamp-1">
+                                        {plate.name}
+                                    </h3>
+                                </div>
+
+                                <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed mb-4">
+                                    {plate.description}
+                                </p>
+
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-1">
+                                        <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                                        <span className="text-sm font-medium">4.8</span>
+                                    </div>
+                                    <Button variant="ghost" size="sm" className="text-primary hover:text-primary hover:bg-primary/5 font-medium gap-1 group/btn">
+                                        Détails
+                                        <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-0.5" />
+                                    </Button>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )
+                })}
             </div>
 
             {/* ═══════════════════ Modern Plate Detail Modal ═══════════════════ */}
@@ -220,21 +250,28 @@ export default function PlatesGrid({ plates }: { plates: Plate[] }) {
                                             {/* Favorite toggle */}
                                             <div className="flex items-center justify-between p-4 rounded-xl bg-muted/50">
                                                 <div className="flex items-center gap-3">
-                                                    <Heart className={`w-5 h-5 ${isLiked ? 'fill-red-500 text-red-500' : 'text-muted-foreground'}`} />
+                                                    <Heart className={`w-5 h-5 ${isWishlisted(selectedPlate.id, 'plate') ? 'fill-red-500 text-red-500' : 'text-muted-foreground'}`} />
                                                     <span className="font-medium">Ajouter aux favoris</span>
                                                 </div>
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
-                                                    onClick={() => setIsLiked(!isLiked)}
-                                                    className={isLiked ? 'text-red-500 hover:text-red-600' : ''}
+                                                    onClick={() => toggleWishlist('plate', selectedPlate)}
+                                                    className={isWishlisted(selectedPlate.id, 'plate') ? 'text-red-500 hover:text-red-600' : ''}
                                                 >
-                                                    {isLiked ? 'Ajouté ♥' : 'Ajouter'}
+                                                    {isWishlisted(selectedPlate.id, 'plate') ? 'Ajouté ♥' : 'Ajouter'}
                                                 </Button>
                                             </div>
 
                                             {/* Order Button */}
-                                            <Button className="w-full h-14 rounded-xl text-base font-semibold shadow-lg shadow-primary/25 gap-2 bg-linear-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary">
+                                            <Button
+                                                onClick={() => {
+                                                    addToCart('plate', selectedPlate)
+                                                    setSelectedPlate(null)
+                                                    useCartStore.getState().setIsOpen(true)
+                                                }}
+                                                className="w-full h-14 rounded-xl text-base font-semibold shadow-lg shadow-primary/25 gap-2 bg-linear-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
+                                            >
                                                 <ShoppingCart className="w-5 h-5" />
                                                 Commander Maintenant
                                             </Button>
@@ -257,5 +294,3 @@ export default function PlatesGrid({ plates }: { plates: Plate[] }) {
         </>
     );
 }
-
-

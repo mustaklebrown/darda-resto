@@ -22,6 +22,11 @@ export const metadata: Metadata = {
     default: "Darda Resto | Restaurant Comorien à Moroni - Cuisine Authentique des Comores",
     template: "%s | Darda Resto - Restaurant Comorien Moroni"
   },
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/apple-icon.png",
+  },
   description: "Restaurant traditionnel comorien à Moroni, Union des Comores. Découvrez nos plats authentiques, notre menu du jour et réservez votre table. Cuisine locale avec produits frais, ambiance chaleureuse et service exceptionnel.",
   keywords: [
     "restaurant Moroni",

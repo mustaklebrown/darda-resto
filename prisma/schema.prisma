@@ -48,6 +48,7 @@ model Menu {
   slug           String         @unique
   description    String?
   image          String?
+  price          Float          @default(0)
   type           MenuType       @default(REGULAR)
   isFeatured     Boolean        @default(false)
   isActive       Boolean        @default(true)
@@ -59,6 +60,7 @@ model Menu {
   categoryMenu   CategoryMenu?  @relation(fields: [categoryMenuId], references: [id])
   categoryPlates CategoryPlate[]
   plates         Plate[]
+  orderItems     OrderItem[]
 }
 
 model Plate {
@@ -74,6 +76,7 @@ model Plate {
   feedback      Feedback[]
   categoryPlate CategoryPlate @relation(fields: [categoryId], references: [id])
   menus         Menu[]
+  orderItems    OrderItem[]
 }
 
 model Reservation {
@@ -159,5 +162,40 @@ enum MenuType {
 enum ReservationStatus {
   PENDING
   CONFIRMED
+  CANCELLED
+}
+
+model Order {
+  id             String      @id @default(cuid())
+  customerName   String
+  customerEmail  String
+  customerPhone  String
+  address        String
+  totalPrice     Float
+  status         OrderStatus @default(PENDING)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  items          OrderItem[]
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  plateId   String?
+  plate     Plate?  @relation(fields: [plateId], references: [id])
+  menuId    String?
+  menu      Menu?   @relation(fields: [menuId], references: [id])
+  name      String
+  price     Float
+  quantity  Int
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PREPARING
+  DELIVERING
+  DELIVERED
   CANCELLED
 }
