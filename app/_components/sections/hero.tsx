@@ -70,7 +70,7 @@ export default function HeroSection({ todayMenu }: HeroProps) {
                             </p>
 
                             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                                <Link href="/menu">
+                                <Link href="/les-plats">
                                     <Button
                                         size="lg"
                                         className="w-full sm:w-auto rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-lg text-base h-12 px-8"

@@ -47,7 +47,7 @@ export default function SignatureDishes({ dishes }: SignatureDishesProps) {
                         viewport={{ once: true }}
                         transition={{ duration: 0.6, delay: 0.2 }}
                     >
-                        <Link href="/menu">
+                        <Link href="/les-plats">
                             <Button variant="outline" className="hidden lg:flex gap-2 rounded-full border-primary/20 hover:bg-primary/5 cursor-pointer">
                                 Voir le Menu Complet <ArrowRight className="w-4 h-4" />
                             </Button>
@@ -114,12 +114,14 @@ export default function SignatureDishes({ dishes }: SignatureDishesProps) {
 
                 {/* Mobile CTA */}
                 <div className="mt-12 flex justify-center lg:hidden">
-                    <Button
-                        size="lg"
-                        className="rounded-full w-full bg-primary text-primary-foreground shadow-lg shadow-primary/20"
-                    >
-                        Explorer le Menu
-                    </Button>
+                    <Link href="/les-plats">
+                        <Button
+                            size="lg"
+                            className="rounded-full w-full bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                        >
+                            Explorer le Menu
+                        </Button>
+                    </Link>
                 </div>
 
             </div>

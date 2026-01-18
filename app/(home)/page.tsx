@@ -11,6 +11,7 @@ import OpenHours from "../_components/sections/open-hours";
 import TodayMenuSection from "../_components/sections/today-menu";
 import prisma from "@/lib/prisma";
 import type { Metadata } from 'next';
+import { headers } from 'next/headers'
 
 export const metadata: Metadata = {
     title: "Accueil",
@@ -20,6 +21,66 @@ export const metadata: Metadata = {
         description: "Restaurant traditionnel comorien à Moroni. Menu du jour, plats signatures et réservations en ligne.",
         images: ['/images/hero.jpg'],
     },
+};
+// Structured data for SEO
+const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+        {
+            "@type": "Restaurant",
+            "@id": "https://darda-resto-3eiv.vercel.app/#restaurant",
+            "name": "Darda Resto",
+            "image": "https://darda-resto-3eiv.vercel.app/images/hero.jpg",
+            "description": "Restaurant traditionnel comorien à Moroni, Union des Comores. Cuisine authentique avec produits frais locaux.",
+            "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "Moroni",
+                "addressLocality": "Moroni",
+                "addressRegion": "Grande Comore",
+                "addressCountry": "KM"
+            },
+            "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": -11.7172,
+                "longitude": 43.2551
+            },
+            "url": "https://darda-resto-3eiv.vercel.app",
+            "telephone": "+269-123-456",
+            "servesCuisine": ["Comorienne", "Africaine", "Traditionnelle"],
+            "priceRange": "$$",
+            "openingHoursSpecification": [
+                {
+                    "@type": "OpeningHoursSpecification",
+                    "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+                    "opens": "08:00",
+                    "closes": "22:00"
+                },
+                {
+                    "@type": "OpeningHoursSpecification",
+                    "dayOfWeek": ["Saturday", "Sunday"],
+                    "opens": "09:00",
+                    "closes": "23:00"
+                }
+            ],
+            "acceptsReservations": "True"
+        },
+        {
+            "@type": "LocalBusiness",
+            "@id": "https://darda-resto-3eiv.vercel.app/#localbusiness",
+            "name": "Darda Resto",
+            "image": "https://darda-resto-3eiv.vercel.app/images/hero.jpg",
+            "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Moroni",
+                "addressCountry": "Comoros"
+            },
+            "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": -11.7172,
+                "longitude": 43.2551
+            }
+        }
+    ]
 };
 
 // Cached function to fetch categories
@@ -102,7 +163,7 @@ async function getDisplayMenus() {
     return { todayMenu, featuredMenu }
 }
 
-import { headers } from 'next/headers'
+
 
 export default async function Page() {
     // Access headers to opt-into dynamic rendering since we use new Date() in getDisplayMenus
@@ -117,66 +178,6 @@ export default async function Page() {
     // Get signature dishes from featured menu, limited to 3
     const signatureDishes = featuredMenu?.plates.slice(0, 3) || []
 
-    // Structured data for SEO
-    const structuredData = {
-        "@context": "https://schema.org",
-        "@graph": [
-            {
-                "@type": "Restaurant",
-                "@id": "https://darda-resto-3eiv.vercel.app/#restaurant",
-                "name": "Darda Resto",
-                "image": "https://darda-resto-3eiv.vercel.app/images/hero.jpg",
-                "description": "Restaurant traditionnel comorien à Moroni, Union des Comores. Cuisine authentique avec produits frais locaux.",
-                "address": {
-                    "@type": "PostalAddress",
-                    "streetAddress": "Moroni",
-                    "addressLocality": "Moroni",
-                    "addressRegion": "Grande Comore",
-                    "addressCountry": "KM"
-                },
-                "geo": {
-                    "@type": "GeoCoordinates",
-                    "latitude": -11.7172,
-                    "longitude": 43.2551
-                },
-                "url": "https://darda-resto-3eiv.vercel.app",
-                "telephone": "+269-123-456",
-                "servesCuisine": ["Comorienne", "Africaine", "Traditionnelle"],
-                "priceRange": "$$",
-                "openingHoursSpecification": [
-                    {
-                        "@type": "OpeningHoursSpecification",
-                        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-                        "opens": "08:00",
-                        "closes": "22:00"
-                    },
-                    {
-                        "@type": "OpeningHoursSpecification",
-                        "dayOfWeek": ["Saturday", "Sunday"],
-                        "opens": "09:00",
-                        "closes": "23:00"
-                    }
-                ],
-                "acceptsReservations": "True"
-            },
-            {
-                "@type": "LocalBusiness",
-                "@id": "https://darda-resto-3eiv.vercel.app/#localbusiness",
-                "name": "Darda Resto",
-                "image": "https://darda-resto-3eiv.vercel.app/images/hero.jpg",
-                "address": {
-                    "@type": "PostalAddress",
-                    "addressLocality": "Moroni",
-                    "addressCountry": "Comoros"
-                },
-                "geo": {
-                    "@type": "GeoCoordinates",
-                    "latitude": -11.7172,
-                    "longitude": 43.2551
-                }
-            }
-        ]
-    };
 
     return (
         <>

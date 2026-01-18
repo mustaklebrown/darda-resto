@@ -155,7 +155,7 @@ export default function TodayMenuSection({ menu }: TodayMenuProps) {
                     transition={{ duration: 0.6, delay: 0.4 }}
                     className="text-center mt-12"
                 >
-                    <Link href="/menu">
+                    <Link href="/les-plats">
                         <Button size="lg" className="gap-2 group">
                             Voir le Menu Complet
                             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
